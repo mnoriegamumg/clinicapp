@@ -1,0 +1,23 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    color: #0a2a4a;
+    font-family: 'Inter', sans-serif;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(145deg, #d9e9fc 0%, #f0f7ff 100%);
+}
+
+.app-content {
+    min-width: 0;
+    flex: 1;
+}
+
+@media (max-width: 760px) {
+    .app-container {
+        display: block;
+    }
+}
