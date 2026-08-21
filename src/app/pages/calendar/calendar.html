@@ -1,0 +1,94 @@
+<main class="calendar-page">
+    <header class="page-header">
+        <div>
+            <a class="back-link" routerLink="/login">← Volver al acceso</a>
+            <p class="eyebrow">Agenda clínica</p>
+            <h1>Calendario</h1>
+            <p class="page-intro">Organiza tus citas y consulta la agenda del centro médico.</p>
+        </div>
+        <div class="brand-mark" aria-label="ProsaMed">P<span>M</span></div>
+    </header>
+
+    <section class="calendar-layout" aria-label="Calendario de citas">
+        <article class="calendar-card">
+            <div class="calendar-toolbar">
+                <div>
+                    <p class="section-label">Vista mensual</p>
+                    <h2>{{ monthLabel() }}</h2>
+                </div>
+                <div class="month-actions">
+                    <button type="button" class="icon-button" aria-label="Mes anterior" (click)="previousMonth()">←</button>
+                    <button type="button" class="today-button" (click)="goToToday()">Hoy</button>
+                    <button type="button" class="icon-button" aria-label="Mes siguiente" (click)="nextMonth()">→</button>
+                </div>
+            </div>
+
+            <div class="weekdays" aria-hidden="true">
+                @for (weekday of ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']; track weekday) {
+                    <span>{{ weekday }}</span>
+                }
+            </div>
+
+            <div class="calendar-grid" role="grid" aria-label="Días del mes">
+                @for (day of calendarDays(); track day?.isoDate ?? $index) {
+                    @if (day) {
+                        <button
+                            type="button"
+                            class="day-cell"
+                            [class.is-today]="day.isToday"
+                            [class.is-selected]="selectedDate() === day.isoDate"
+                            [attr.aria-label]="'Seleccionar ' + day.date"
+                            [attr.aria-pressed]="selectedDate() === day.isoDate"
+                            (click)="selectDate(day)">
+                            <span>{{ day.date }}</span>
+                            @if (day.isToday) {
+                                <i aria-hidden="true"></i>
+                            }
+                        </button>
+                    } @else {
+                        <span class="empty-day" aria-hidden="true"></span>
+                    }
+                }
+            </div>
+        </article>
+
+        <aside class="appointments-card">
+            <div class="date-heading">
+                <span class="date-icon" aria-hidden="true">✦</span>
+                <div>
+                    <p class="section-label">Día seleccionado</p>
+                    <h2>{{ selectedDateLabel() }}</h2>
+                </div>
+            </div>
+
+            @if (selectedAppointments().length === 0) {
+                <div class="appointment-empty">
+                    <span aria-hidden="true">＋</span>
+                    <h3>Sin citas programadas</h3>
+                    <p>Este día está disponible para nuevas consultas.</p>
+                    <button type="button" class="primary-button" (click)="appointmentDialog.open()">Agregar cita</button>
+                </div>
+            } @else {
+                <div class="appointment-list">
+                    @for (appointment of selectedAppointments(); track $index) {
+                        <article class="appointment-item">
+                            <div class="appointment-time">{{ appointment.time }}</div>
+                            <div>
+                                <h3>{{ appointment.patient }}</h3>
+                                <p>{{ appointment.specialty }}</p>
+                                <small>DPI: {{ appointment.dpi }}</small>
+                            </div>
+                        </article>
+                    }
+                    <button type="button" class="primary-button" (click)="appointmentDialog.open()">Agregar cita</button>
+                </div>
+            }
+        </aside>
+    </section>
+
+    <app-appointment-dialog
+        #appointmentDialog
+        [selectedDate]="selectedDate()"
+        (appointmentCreated)="addAppointment($event)">
+    </app-appointment-dialog>
+</main>

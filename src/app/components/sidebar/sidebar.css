@@ -1,0 +1,200 @@
+.app-sidebar {
+    display: flex;
+    width: 252px;
+    min-height: 100vh;
+    flex: 0 0 252px;
+    flex-direction: column;
+    padding: 30px 18px 22px;
+    border-right: 1px solid rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 10px 0 30px rgba(0, 60, 130, 0.06);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 12px 54px;
+    color: #0a2a4a;
+    text-decoration: none;
+}
+
+.brand-symbol {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    flex: 0 0 auto;
+    color: #fff;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #1a6bc4, #67b1ee);
+    box-shadow: 0 8px 18px rgba(26, 107, 196, 0.22);
+    font-size: 20px;
+}
+
+.brand strong,
+.brand small,
+.sidebar-footer strong,
+.sidebar-footer span {
+    display: block;
+}
+
+.brand strong {
+    font-size: 17px;
+    line-height: 1.1;
+}
+
+.brand strong span {
+    color: #1a6bc4;
+}
+
+.brand small {
+    margin-top: 5px;
+    color: #6b8aa5;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.nav-label {
+    margin: 0 14px 12px;
+    color: #8aa5bd;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+}
+
+.main-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.main-nav a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 14px;
+    color: #507491;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.main-nav a:not(.nav-item-muted):hover,
+.main-nav a.active {
+    color: #0d4a8a;
+    background: #eaf4ff;
+}
+
+.main-nav a.active::before {
+    position: absolute;
+    left: -18px;
+    width: 4px;
+    height: 24px;
+    border-radius: 0 4px 4px 0;
+    background: #1a6bc4;
+    content: '';
+}
+
+.nav-icon {
+    display: grid;
+    width: 24px;
+    place-items: center;
+    color: #1a6bc4;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.nav-item-muted {
+    cursor: default;
+    opacity: 0.58;
+}
+
+.nav-item-muted small {
+    margin-left: auto;
+    color: #8aa5bd;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding: 16px 12px 0;
+    border-top: 1px solid #dceafa;
+}
+
+.clinic-badge {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    color: #fff;
+    border-radius: 11px;
+    background: linear-gradient(145deg, #1a6bc4, #6aa9f0);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.sidebar-footer strong {
+    color: #0a2a4a;
+    font-size: 12px;
+}
+
+.sidebar-footer span {
+    margin-top: 3px;
+    color: #6b8aa5;
+    font-size: 11px;
+}
+
+@media (max-width: 760px) {
+    .app-sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 16px 12px 12px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+    }
+
+    .brand {
+        margin: 0 6px 18px;
+    }
+
+    .nav-label,
+    .sidebar-footer {
+        display: none;
+    }
+
+    .main-nav {
+        flex-direction: row;
+        gap: 4px;
+        overflow-x: auto;
+    }
+
+    .main-nav a {
+        min-width: max-content;
+        min-height: 42px;
+        padding: 0 12px;
+    }
+
+    .main-nav a.active::before {
+        top: auto;
+        right: 14px;
+        bottom: -12px;
+        left: 14px;
+        width: auto;
+        height: 3px;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .nav-item-muted small {
+        display: none;
+    }
+}

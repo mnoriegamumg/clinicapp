@@ -1,0 +1,65 @@
+<div class="login-card">
+
+    <!-- LOGO + TÍTULO -->
+    <div class="logo-section">
+        <img class="logo-image" src="/assets/logoprosamed.jpg" alt="ProsaMed - Centro Médico" />
+        <h1>Clini<span>ca</span>App</h1>
+
+        <!-- "ProsaMed" estilo imagen: Centro Médico + ProsaMed -->
+        <div class="clinic-sub">
+            <span>🏥</span>
+            <span>Centro Médico</span>
+            <span class="badge-icon">ProsaMed</span>
+        </div>
+    </div>
+
+    <!-- FORMULARIO -->
+    <form id="loginForm" onsubmit="return false;">
+
+        <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <div class="input-wrapper">
+                <span class="icon-left">📧</span>
+                <input type="email" id="email" placeholder="usuario@prosamed.com" value="admin@prosamed.com" required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Contraseña</label>
+            <div class="input-wrapper">
+                <span class="icon-left">🔒</span>
+                <input type="password" id="password" placeholder="••••••••" value="12345678" required />
+            </div>
+        </div>
+
+        <!-- Opciones -->
+        <div class="form-options">
+            <label>
+                <input type="checkbox" checked />
+                Recordarme
+            </label>
+            <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <!-- Botón -->
+        <button routerLink="/calendario" type="submit" class="btn-login">
+            Iniciar Sesión
+        </button>
+
+        <!-- Divisor sutil -->
+        <div class="divider-text">o</div>
+
+        <!-- Registro -->
+        <div class="footer-register">
+            ¿No tienes cuenta? <a href="#">Crear cuenta</a>
+        </div>
+
+    </form>
+
+    <!-- pequeño mensaje de demo (opcional, solo para mostrar que funciona) -->
+    <div
+        style="text-align:center;font-size:12px;color:#99b8d4;margin-top:18px;position:relative;z-index:1;border-top:1px solid #e2edf9;padding-top:16px;">
+        ⚡ Demo · ClinicaApp v1.0
+    </div>
+
+</div>

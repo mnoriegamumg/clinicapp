@@ -1,0 +1,44 @@
+<main class="patients-page">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Gestión clínica</p>
+            <h1>Pacientes</h1>
+            <p class="page-intro">Consulta la información de tus pacientes y revisa su historial médico.</p>
+        </div>
+        <div class="patient-count" aria-label="Cantidad de pacientes">
+            <strong>{{ patients.length }}</strong>
+            <span>pacientes registrados</span>
+        </div>
+    </header>
+
+    <section class="patients-card" aria-label="Listado de pacientes">
+        <div class="section-heading">
+            <div>
+                <p class="section-label">Directorio</p>
+                <h2>Pacientes registrados</h2>
+            </div>
+            <span class="section-meta">{{ patients.length }} registros</span>
+        </div>
+
+        <div class="patients-list">
+            @for (patient of patients; track patient.id) {
+                <article class="patient-row">
+                    <div class="patient-avatar" aria-hidden="true">{{ patient.name.charAt(0) }}</div>
+                    <div class="patient-info">
+                        <h3>{{ patient.name }}</h3>
+                        <p>DPI {{ patient.dpi }} · {{ patient.age }} años</p>
+                    </div>
+                    <div class="patient-contact">
+                        <span>Teléfono</span>
+                        <strong>{{ patient.phone }}</strong>
+                    </div>
+                    <button type="button" class="history-button" (click)="showHistory(patient)">
+                        Ver historial <span aria-hidden="true">→</span>
+                    </button>
+                </article>
+            }
+        </div>
+    </section>
+
+    <app-medical-history-dialog [patient]="selectedPatient()"></app-medical-history-dialog>
+</main>

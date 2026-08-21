@@ -1,0 +1,36 @@
+<aside class="app-sidebar">
+    <a class="brand" routerLink="/calendario" aria-label="Ir al calendario de ClinicaApp">
+        <span class="brand-symbol">✦</span>
+        <span>
+            <strong>Clini<span>ca</span>App</strong>
+            <small>Centro Médico</small>
+        </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegación principal">
+        <p class="nav-label">Menú principal</p>
+        @for (menu of menus; track menu.route) {
+            @if (menu.disabled) {
+                <a class="nav-item-muted" aria-disabled="true">
+                    <span class="nav-icon" aria-hidden="true">{{ menu.icon }}</span>
+                    <span>{{ menu.name }}</span>
+                    <small>Próximamente</small>
+                </a>
+            } @else {
+                <a [routerLink]="menu.route" routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: menu.route === '/home' }">
+                    <span class="nav-icon" aria-hidden="true">{{ menu.icon }}</span>
+                    <span>{{ menu.name }}</span>
+                </a>
+            }
+        }
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="clinic-badge" aria-hidden="true">PM</div>
+        <div>
+            <strong>ProsaMed</strong>
+            <span>Agenda clínica</span>
+        </div>
+    </div>
+</aside>

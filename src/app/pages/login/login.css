@@ -1,0 +1,339 @@
+        /* ───────── RESET & BASE ───────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :host {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+            padding: 20px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f6fe;
+            /* degradado sutil de fondo */
+            background: linear-gradient(145deg, #d9e9fc 0%, #f0f7ff 100%);
+            padding: 20px;
+        }
+
+        /* ───────── TARJETA PRINCIPAL ───────── */
+        .login-card {
+            background: #ffffff;
+            border-radius: 48px 48px 40px 40px;
+            max-width: 460px;
+            width: 100%;
+            padding: 44px 36px 40px;
+            box-shadow: 0 20px 60px rgba(0, 60, 130, 0.18),
+                0 8px 24px rgba(0, 40, 100, 0.06);
+            transition: transform 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            justify-content: center !important;
+            margin: 0 auto;
+        }
+
+        /* ───────── DEGRADADO DE FONDO DEL LOGO ───────── */
+        .login-card::before {
+            top: -80px;
+            left: -80px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at 30% 20%, #4a8fe0, #b3d9ff 70%, #d6eaff);
+            border-radius: 50%;
+            opacity: 0.20;
+            pointer-events: none;
+            justify-content: center !important;
+        }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle at 70% 80%, #7ab7f5, #cde4fe 60%, #e8f3ff);
+            border-radius: 50%;
+            opacity: 0.15;
+            pointer-events: none;
+            justify-content: center !important;
+        }
+
+        /* ───────── LOGO / ENCABEZADO ───────── */
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-image {
+            display: block;
+            width: min(100%, 300px);
+            height: auto;
+            max-height: 94px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .logo-section h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #0a2a4a;
+            margin-top: 8px;
+        }
+
+        .logo-section h1 span {
+            color: #1a6bc4;
+        }
+
+        /* ───────── TEXTO "ProsaMed" ───────── */
+        .clinic-sub {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c5778;
+            background: rgba(220, 238, 255, 0.50);
+            backdrop-filter: blur(4px);
+            padding: 6px 18px 6px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.60);
+            margin-top: 2px;
+            box-shadow: 0 2px 8px rgba(0, 40, 80, 0.04);
+        }
+
+        .clinic-sub .badge-icon {
+            background: linear-gradient(135deg, #1a6bc4, #6aa9f0);
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ───────── FORMULARIO ───────── */
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f3b54;
+            margin-bottom: 6px;
+            letter-spacing: -0.2px;
+        }
+
+        .form-group .input-wrapper {
+            position: relative;
+        }
+
+        .form-group .input-wrapper .icon-left {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px 14px 46px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #0a2a4a;
+            background: #f5faff;
+            border: 1.5px solid #d6e7fa;
+            border-radius: 30px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s, background 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input::placeholder {
+            color: #9bb7d4;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: #1a6bc4;
+            background: #ffffff;
+            box-shadow: 0 0 0 5px rgba(26, 107, 196, 0.10);
+        }
+
+        /* ───────── OPCIONES (recordar / olvidó) ───────── */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0 28px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c5778;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .form-options label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1a6bc4;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .form-options a {
+            color: #1a6bc4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            border-bottom: 1px solid transparent;
+        }
+
+        .form-options a:hover {
+            color: #0d4a8a;
+            border-bottom-color: #1a6bc4;
+        }
+
+        /* ───────── BOTÓN ───────── */
+        .btn-login {
+            width: 100%;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #1463b8, #3b8ce0 60%, #6aadf5);
+            border: none;
+            border-radius: 40px;
+            font-size: 17px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s, background 0.3s;
+            box-shadow: 0 8px 24px rgba(26, 107, 196, 0.25);
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 1;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #0f56a0, #2f7dd4 60%, #5a9fe8);
+            box-shadow: 0 12px 32px rgba(26, 107, 196, 0.35);
+        }
+
+        .btn-login:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 12px rgba(26, 107, 196, 0.20);
+        }
+
+        /* ───────── PIE / REGISTRO ───────── */
+        .footer-register {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 14px;
+            color: #3a5f7a;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-register a {
+            color: #1a6bc4;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .footer-register a:hover {
+            color: #0d4a8a;
+            border-bottom-color: #1a6bc4;
+        }
+
+        /* ───────── SEPARADOR DECORATIVO ───────── */
+        .divider-text {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0 16px;
+            font-size: 13px;
+            color: #7a9cba;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #b6d2ea, transparent);
+        }
+
+        /* ───────── RESPONSIVE ───────── */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 32px 20px 30px;
+                border-radius: 32px;
+                justify-content: center !important;
+            }
+
+            .logo-section h1 {
+                font-size: 26px;
+            }
+
+            .logo-image {
+                max-height: 76px;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .btn-login {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .login-card {
+                padding: 24px 16px 24px;
+                justify-content: center;
+            }
+
+            .logo-section h1 {
+                font-size: 22px;
+            }
+        }

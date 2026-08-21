@@ -1,0 +1,54 @@
+<main class="home-page">
+    <section class="welcome-section" aria-labelledby="home-title">
+        <div class="welcome-copy">
+            <p class="eyebrow">Bienvenido a ProsaMed</p>
+            <h1 id="home-title">Tu salud merece<br /><span>un lugar tranquilo.</span></h1>
+            <p class="welcome-text">
+                En ProsaMed combinamos experiencia médica y atención humana para acompañarte en cada paso.
+            </p>
+            <div class="welcome-actions">
+                <a class="primary-button" routerLink="/calendario">Agendar una cita <span aria-hidden="true">→</span></a>
+                <a class="secondary-link" href="#especialidades">Conoce nuestras especialidades</a>
+            </div>
+        </div>
+
+        <div class="welcome-visual" aria-label="Equipo médico de ProsaMed">
+            <div class="visual-ring ring-one"></div>
+            <div class="visual-ring ring-two"></div>
+            <div class="visual-content">
+                <span class="visual-symbol" aria-hidden="true">✦</span>
+                <strong>ProsaMed</strong>
+                <span>Centro Médico</span>
+            </div>
+            <div class="floating-note note-top"><strong>+15</strong><span>años cuidando de ti</span></div>
+            <div class="floating-note note-bottom"><span class="status-dot" aria-hidden="true"></span><span>Atención con calidez</span></div>
+        </div>
+    </section>
+
+    <section class="clinic-facts" aria-label="Información de ProsaMed">
+        <div><strong>4.9/5</strong><span>Valoración de pacientes</span></div>
+        <div><strong>12</strong><span>Especialidades médicas</span></div>
+        <div><strong>Lun - Sáb</strong><span>Horarios de atención</span></div>
+    </section>
+
+    <section class="specialties-section" id="especialidades" aria-labelledby="specialties-title">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Atención integral</p>
+                <h2 id="specialties-title">Especialidades para cuidarte mejor</h2>
+            </div>
+            <p>Un equipo preparado para darte un diagnóstico claro y un acompañamiento cercano.</p>
+        </div>
+
+        <div class="specialties-grid">
+            @for (specialty of specialties; track specialty.name) {
+                <article class="specialty-card">
+                    <span class="specialty-icon" aria-hidden="true">{{ specialty.icon }}</span>
+                    <h3>{{ specialty.name }}</h3>
+                    <p>{{ specialty.description }}</p>
+                    <a routerLink="/calendario" [attr.aria-label]="'Agendar cita de ' + specialty.name">Ver disponibilidad <span aria-hidden="true">↗</span></a>
+                </article>
+            }
+        </div>
+    </section>
+</main>

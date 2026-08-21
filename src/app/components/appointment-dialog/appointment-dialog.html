@@ -1,0 +1,64 @@
+<dialog #dialog class="appointment-dialog" (click)="closeOnBackdrop($event)">
+    <div class="dialog-panel" role="document">
+        <div class="dialog-header">
+            <div>
+                <p class="eyebrow">Agenda clínica</p>
+                <h2>Agendar cita</h2>
+                <p class="dialog-intro">Completa los datos para reservar una consulta.</p>
+            </div>
+            <button type="button" class="close-button" aria-label="Cerrar diálogo" (click)="close()">×</button>
+        </div>
+
+        <form #appointmentForm (submit)="$event.preventDefault(); submit(appointmentForm)">
+            <label>
+                DPI
+                <input
+                    name="dpi"
+                    type="text"
+                    placeholder="0000 00000 0000"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    maxlength="15"
+                    pattern="[0-9 ]{13,15}"
+                    required>
+            </label>
+
+            <label>
+                Paciente
+                <input name="patient" type="text" placeholder="Nombre completo" autocomplete="name" required>
+            </label>
+
+            <label>
+                Especialidad
+                <select name="specialty" required>
+                    <option value="" selected disabled>Selecciona una especialidad</option>
+                    <option value="medicina-general">Medicina general</option>
+                    <option value="cardiologia">Cardiología</option>
+                    <option value="dermatologia">Dermatología</option>
+                    <option value="pediatria">Pediatría</option>
+                </select>
+            </label>
+
+            <div class="form-row">
+                <label>
+                    Fecha
+                    <input name="date" type="date" [value]="selectedDate()" required>
+                </label>
+                <label>
+                    Hora
+                    <input name="time" type="time" required>
+                </label>
+            </div>
+
+            <label>
+                Motivo de consulta
+                <textarea name="reason" rows="3" placeholder="Describe brevemente el motivo" required></textarea>
+            </label>
+
+            <div class="dialog-actions">
+                <button type="button" class="secondary-button" (click)="close()">Cancelar</button>
+                <button type="submit" class="primary-button">Confirmar cita</button>
+            </div>
+        </form>
+    </div>
+</dialog>

@@ -1,0 +1,47 @@
+<dialog #dialog class="history-dialog" (click)="closeOnBackdrop($event)">
+    @if (patient(); as selectedPatient) {
+        <div class="dialog-panel" role="document">
+            <header class="dialog-header">
+                <div>
+                    <p class="eyebrow">Expediente clínico</p>
+                    <h2>Historial médico</h2>
+                    <p class="dialog-intro">Información registrada de {{ selectedPatient.name }}.</p>
+                </div>
+                <button type="button" class="close-button" aria-label="Cerrar historial" (click)="close()">×</button>
+            </header>
+
+            <section class="patient-summary" aria-label="Datos del paciente">
+                <div class="patient-avatar" aria-hidden="true">{{ selectedPatient.name.charAt(0) }}</div>
+                <div>
+                    <h3>{{ selectedPatient.name }}</h3>
+                    <p>DPI {{ selectedPatient.dpi }} · {{ selectedPatient.age }} años</p>
+                </div>
+            </section>
+
+            <dl class="patient-details">
+                <div>
+                    <dt>Tipo de sangre</dt>
+                    <dd>{{ selectedPatient.bloodType }}</dd>
+                </div>
+                <div>
+                    <dt>Teléfono</dt>
+                    <dd>{{ selectedPatient.phone }}</dd>
+                </div>
+                <div>
+                    <dt>Alergias</dt>
+                    <dd>{{ selectedPatient.allergies }}</dd>
+                </div>
+                <div>
+                    <dt>Última consulta</dt>
+                    <dd>{{ selectedPatient.lastVisit }}</dd>
+                </div>
+            </dl>
+
+            <section class="clinical-note">
+                <p class="section-label">Última evolución</p>
+                <h3>{{ selectedPatient.diagnosis }}</h3>
+                <p>{{ selectedPatient.treatment }}</p>
+            </section>
+        </div>
+    }
+</dialog>
