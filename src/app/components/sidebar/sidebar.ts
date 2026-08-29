@@ -29,6 +29,24 @@ export class Sidebar {
       disabled: false,
     },
     {
+      name: 'Reporte de pacientes',
+      icon: '☰',
+      route: '/reporte-pacientes',
+      disabled: false,
+    },
+    {
+      name: 'Reporte de doctores',
+      icon: '✚',
+      route: '/reporte-doctores',
+      disabled: false,
+    },
+    {
+      name: 'Reporte de citas programadas',
+      icon: '⎘',
+      route: '/reporte-citas',
+      disabled: false,
+    },
+    {
       name: 'Configuración',
       icon: '⚙',
       route: '/configuracion',

@@ -20,6 +20,7 @@
                     autocomplete="off"
                     maxlength="15"
                     pattern="[0-9 ]{13,15}"
+                    (change)="searchPacient()"
                     required>
             </label>
 
@@ -27,6 +28,17 @@
                 Paciente
                 <input name="patient" type="text" placeholder="Nombre completo" autocomplete="name" required>
             </label>
+
+            <div class="form-row">
+                <label>
+                    ID del paciente
+                    <input name="pacienteId" type="number" min="1" required>
+                </label>
+                <label>
+                    ID del médico
+                    <input name="medicoId" type="number" min="1" required>
+                </label>
+            </div>
 
             <label>
                 Especialidad
@@ -55,9 +67,15 @@
                 <textarea name="reason" rows="3" placeholder="Describe brevemente el motivo" required></textarea>
             </label>
 
+            @if (saveError) {
+                <p class="form-error" role="alert">{{ saveError }}</p>
+            }
+
             <div class="dialog-actions">
                 <button type="button" class="secondary-button" (click)="close()">Cancelar</button>
-                <button type="submit" class="primary-button">Confirmar cita</button>
+                <button type="submit" class="primary-button" [disabled]="isSaving">
+                    {{ isSaving ? 'Guardando...' : 'Confirmar cita' }}
+                </button>
             </div>
         </form>
     </div>

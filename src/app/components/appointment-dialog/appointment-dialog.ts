@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, ElementRef, input, output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, ViewChild } from '@angular/core';
+import { AppointmentService } from '../../servicios/appointment.service';
 
 export type Appointment = {
   dpi: string;
@@ -16,10 +17,12 @@ export type Appointment = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppointmentDialog {
+  private readonly appointmentService = inject(AppointmentService);
   @ViewChild('dialog') private readonly dialog?: ElementRef<HTMLDialogElement>;
 
   readonly selectedDate = input('');
-  readonly appointmentCreated = output<Appointment>();
+  protected isSaving = false;
+  protected saveError = '';
 
   open(): void {
     this.dialog?.nativeElement.showModal();
@@ -36,16 +39,37 @@ export class AppointmentDialog {
   }
 
   protected submit(form: HTMLFormElement): void {
+    if (!form.reportValidity() || this.isSaving) {
+      return;
+    }
+
     const formData = new FormData(form);
-    this.appointmentCreated.emit({
+    const date = String(formData.get('date') ?? '');
+    const time = String(formData.get('time') ?? '');
+    this.isSaving = true;
+    this.saveError = '';
+
+    this.appointmentService.addAppointment({
+      pacienteId: Number(formData.get('pacienteId')),
+      medicoId: Number(formData.get('medicoId')),
+      fechaHora: `${date}T${time}:00`,
       dpi: String(formData.get('dpi') ?? ''),
-      patient: String(formData.get('patient') ?? ''),
-      specialty: String(formData.get('specialty') ?? ''),
-      date: String(formData.get('date') ?? ''),
-      time: String(formData.get('time') ?? ''),
-      reason: String(formData.get('reason') ?? ''),
+      motivo: String(formData.get('reason') ?? ''),
+    }).subscribe({
+      next: () => {
+        this.isSaving = false;
+        form.reset();
+        this.close();
+      },
+      error: () => {
+        this.isSaving = false;
+        this.saveError = 'No se pudo guardar la cita. Verifica los datos e inténtalo de nuevo.';
+      },
     });
-    form.reset();
-    this.close();
+  }
+
+  protected searchPacient(): void {
+    // Implementation for searching patient by DPI
+
   }
 }

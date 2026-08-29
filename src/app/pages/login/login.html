@@ -14,13 +14,13 @@
     </div>
 
     <!-- FORMULARIO -->
-    <form id="loginForm" onsubmit="return false;">
+    <form id="loginForm" [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
 
         <div class="form-group">
             <label for="email">Correo electrónico</label>
             <div class="input-wrapper">
                 <span class="icon-left">📧</span>
-                <input type="email" id="email" placeholder="usuario@prosamed.com" value="admin@prosamed.com" required />
+                <input type="email" id="email" placeholder="usuario@prosamed.com" formControlName="email" required />
             </div>
         </div>
 
@@ -28,22 +28,26 @@
             <label for="password">Contraseña</label>
             <div class="input-wrapper">
                 <span class="icon-left">🔒</span>
-                <input type="password" id="password" placeholder="••••••••" value="12345678" required />
+                <input type="password" id="password" placeholder="••••••••" formControlName="password" required />
             </div>
         </div>
 
         <!-- Opciones -->
         <div class="form-options">
             <label>
-                <input type="checkbox" checked />
+                <input type="checkbox" formControlName="rememberMe" />
                 Recordarme
             </label>
             <a href="#">¿Olvidaste tu contraseña?</a>
         </div>
 
         <!-- Botón -->
-        <button routerLink="/calendario" type="submit" class="btn-login">
-            Iniciar Sesión
+        @if (loginError) {
+            <p class="login-error" role="alert">{{ loginError }}</p>
+        }
+
+        <button type="submit" class="btn-login" [disabled]="isLoading">
+            {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
         </button>
 
         <!-- Divisor sutil -->
