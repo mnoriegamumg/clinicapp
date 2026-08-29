@@ -20,25 +20,53 @@
                     autocomplete="off"
                     maxlength="15"
                     pattern="[0-9 ]{13,15}"
-                    (change)="searchPacient()"
+                    (input)="schedulePatientSearch(appointmentForm)"
+                    (change)="searchPatient(appointmentForm)"
                     required>
             </label>
 
-            <label>
-                Paciente
-                <input name="patient" type="text" placeholder="Nombre completo" autocomplete="name" required>
-            </label>
+            @if (patientLoading) {
+                <p class="form-hint" role="status">Buscando paciente...</p>
+            }
+
+            @if (patientSearchError) {
+                <p class="form-error" role="alert">{{ patientSearchError }}</p>
+            }
 
             <div class="form-row">
                 <label>
-                    ID del paciente
-                    <input name="pacienteId" type="number" min="1" required>
+                    Nombres
+                    <input name="nombres" type="text" placeholder="Nombres" autocomplete="given-name" required>
                 </label>
                 <label>
-                    ID del médico
-                    <input name="medicoId" type="number" min="1" required>
+                    Apellidos
+                    <input name="apellidos" type="text" placeholder="Apellidos" autocomplete="family-name" required>
                 </label>
             </div>
+
+            @if (showAdditionalPatientData) {
+                <div class="form-row">
+                    <label>
+                        Email
+                        <input name="email" type="email" placeholder="correo@ejemplo.com" autocomplete="email" [required]="showAdditionalPatientData">
+                    </label>
+                    <label>
+                        Teléfono
+                        <input name="telefono" type="tel" placeholder="5555-1234" autocomplete="tel" [required]="showAdditionalPatientData">
+                    </label>
+                </div>
+
+                <div class="form-row">
+                    <label>
+                        Fecha de nacimiento
+                        <input name="fechaNacimiento" type="date" [required]="showAdditionalPatientData">
+                    </label>
+                    <label>
+                        Dirección
+                        <input name="direccion" type="text" placeholder="Dirección" [required]="showAdditionalPatientData">
+                    </label>
+                </div>
+            }
 
             <label>
                 Especialidad

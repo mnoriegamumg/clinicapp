@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AppointmentDialog } from '../../components/appointment-dialog/appointment-dialog';
+import { Appointment, AppointmentDialog } from '../../components/appointment-dialog/appointment-dialog';
 import { AppointmentService } from '../../servicios/appointment.service';
+import { AuthService } from '../../servicios/auth.service';
 
 type CalendarDay = {
   date: number;
@@ -18,9 +19,14 @@ type CalendarDay = {
 })
 export class Calendar {
   private readonly appointmentService = inject(AppointmentService);
+  private readonly authService = inject(AuthService);
+  @ViewChild('doctorDialog') private readonly doctorDialog?: ElementRef<HTMLDialogElement>;
   private readonly today = new Date();
   protected readonly currentMonth = signal(new Date(this.today.getFullYear(), this.today.getMonth(), 1));
   protected readonly selectedDate = signal(this.toIsoDate(this.today));
+  protected readonly isMedico = signal(this.authService.isMedico());
+  protected readonly selectedAppointmentForCare = signal<Appointment | null>(null);
+  protected readonly doctorObservations = signal('');
 
   constructor() {
     effect(() => {
@@ -64,7 +70,10 @@ export class Calendar {
   });
 
   protected readonly selectedAppointments = computed(() =>
-    this.appointmentService.appointments().filter((appointment) => appointment.date === this.selectedDate()),
+    this.appointmentService.appointments().filter((appointment) => {
+      const appointmentDate = appointment.fechaHora ? appointment.fechaHora.slice(0, 10) : appointment.date;
+      return appointmentDate === this.selectedDate();
+    }),
   );
 
   protected previousMonth(): void {
@@ -84,6 +93,53 @@ export class Calendar {
 
   protected selectDate(day: CalendarDay): void {
     this.selectedDate.set(day.isoDate);
+  }
+
+  protected openAttendDialog(appointment: Appointment): void {
+    this.selectedAppointmentForCare.set(appointment);
+    this.doctorObservations.set('');
+    this.doctorDialog?.nativeElement.showModal();
+  }
+
+  protected closeAttendDialog(): void {
+    this.selectedAppointmentForCare.set(null);
+    this.doctorObservations.set('');
+    this.doctorDialog?.nativeElement.close();
+  }
+
+  protected savePatientObservations(): void {
+    const appointment = this.selectedAppointmentForCare();
+    if (!appointment) {
+      return;
+    }
+
+    console.log('Observaciones del médico para la cita:', {
+      appointmentId: appointment.id,
+      pacienteNombreCompleto: appointment.pacienteNombreCompleto,
+      observaciones: this.doctorObservations(),
+    });
+
+    this.closeAttendDialog();
+  }
+
+  protected closeOnBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.closeAttendDialog();
+    }
+  }
+
+  protected formatAppointmentTime(fechaHora?: string, fallback?: string): string {
+    if (fechaHora) {
+      const date = new Date(fechaHora);
+      if (!Number.isNaN(date.getTime())) {
+        return new Intl.DateTimeFormat('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }).format(date);
+      }
+    }
+
+    return fallback ?? 'Hora no disponible';
   }
 
   private loadAppointments(month: Date): void {

@@ -308,6 +308,19 @@ h2 {
     background: #f8fbff;
 }
 
+.appointment-item > div:first-of-type {
+    min-width: 52px;
+}
+
+.appointment-item > div:last-of-type {
+    flex: 1;
+}
+
+.appointment-item .secondary-button {
+    margin-top: 8px;
+    align-self: flex-start;
+}
+
 .appointment-time {
     min-width: 48px;
     color: var(--blue);
@@ -342,16 +355,154 @@ h2 {
     margin-top: auto;
 }
 
+.primary-button,
+.secondary-button,
+.icon-button,
+.today-button,
+.close-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
 .primary-button {
     padding: 13px 22px;
     color: #fff;
+    border: 0;
     border-radius: 24px;
     background: linear-gradient(135deg, #1463b8, #3b8ce0 60%, #6aadf5);
     box-shadow: 0 8px 24px rgba(26, 107, 196, 0.22);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
 }
 
 .primary-button:hover {
     background: linear-gradient(135deg, #0f56a0, #2f7dd4 60%, #5a9fe8);
+}
+
+.secondary-button {
+    padding: 10px 16px;
+    color: var(--blue-dark);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: #eef6ff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.secondary-button:hover {
+    background: #e3f1ff;
+}
+
+.history-dialog {
+    width: min(560px, calc(100% - 32px));
+    max-height: calc(100vh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 24px;
+    background: transparent;
+    box-shadow: 0 24px 70px rgba(0, 40, 90, 0.24);
+}
+
+.history-dialog::backdrop {
+    background: rgba(7, 34, 63, 0.42);
+    backdrop-filter: blur(4px);
+}
+
+.history-dialog .dialog-panel {
+    padding: 28px 26px;
+    border-radius: 24px;
+    background: #fff;
+}
+
+.history-dialog .dialog-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.history-dialog .dialog-header h2 {
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.history-dialog .dialog-intro {
+    margin-bottom: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.history-dialog .close-button {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 50%;
+    color: var(--blue-dark);
+    background: #eaf4ff;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.history-dialog .patient-summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 16px;
+    background: #f3f9ff;
+}
+
+.history-dialog .patient-summary > div {
+    flex: 1;
+}
+
+.history-dialog .patient-summary p {
+    margin-bottom: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.history-dialog label {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.history-dialog textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 120px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    color: var(--ink);
+    background: #f8fbff;
+    resize: vertical;
+    font: inherit;
+}
+
+.history-dialog textarea:focus {
+    outline: 3px solid rgba(26, 107, 196, 0.18);
+    border-color: var(--blue);
+}
+
+.history-dialog .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 button:focus-visible,

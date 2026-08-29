@@ -1,0 +1,71 @@
+<main class="report-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Reportes</p>
+      <h1>Reporte de pacientes</h1>
+      <p class="page-intro">Filtra pacientes por fecha de última visita y revisa su información general.</p>
+    </div>
+    <div class="brand-mark" aria-label="ProsaMed">P<span>M</span></div>
+  </header>
+
+  <section class="filters-card" aria-label="Filtros de reportes de pacientes">
+    <div class="filter-group">
+      <label for="start-date">Fecha inicio</label>
+      <input
+        id="start-date"
+        type="date"
+        [value]="startDate()"
+        (input)="startDate.set($any($event.target).value)"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="end-date">Fecha fin</label>
+      <input
+        id="end-date"
+        type="date"
+        [value]="endDate()"
+        (input)="endDate.set($any($event.target).value)"
+      />
+    </div>
+  </section>
+
+  <section class="table-card" aria-label="Tabla de pacientes">
+    <div class="table-header">
+      <div>
+        <p class="section-label">Resultado</p>
+        <h2>Pacientes registrados</h2>
+      </div>
+      <span>{{ filteredPatients().length }} registros</span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>DPI</th>
+            <th>Edad</th>
+            <th>Última visita</th>
+            <th>Médico</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (patient of filteredPatients(); track patient.id) {
+            <tr>
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.dpi }}</td>
+              <td>{{ patient.age }} años</td>
+              <td>{{ formatDate(patient.lastVisit) }}</td>
+              <td>{{ patient.doctor }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-state">No se encontraron pacientes con los filtros aplicados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>

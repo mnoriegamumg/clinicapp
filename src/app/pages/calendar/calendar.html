@@ -72,12 +72,15 @@
                 <div class="appointment-list">
                     @for (appointment of selectedAppointments(); track $index) {
                         <article class="appointment-item">
-                            <div class="appointment-time">{{ appointment.time }}</div>
+                            <div class="appointment-time">{{ formatAppointmentTime(appointment.fechaHora, appointment.time) }}</div>
                             <div>
-                                <h3>{{ appointment.patient }}</h3>
-                                <p>{{ appointment.specialty }}</p>
-                                <small>DPI: {{ appointment.dpi }}</small>
+                                <h3>{{ appointment.pacienteNombreCompleto ?? appointment.patient }}</h3>
+                                <p>{{ appointment.medicoEspecialidad ?? appointment.specialty }}</p>
+                                <small>{{ appointment.estado ?? 'PENDIENTE' }} · {{ appointment.motivo ?? 'Sin motivo' }}</small>
                             </div>
+                            @if (isMedico()) {
+                                <button type="button" class="secondary-button" (click)="openAttendDialog(appointment)">Atender cita</button>
+                            }
                         </article>
                     }
                     <button type="button" class="primary-button" (click)="appointmentDialog.open()">Agregar cita</button>
@@ -90,4 +93,43 @@
         #appointmentDialog
         [selectedDate]="selectedDate()">
     </app-appointment-dialog>
+
+    <dialog #doctorDialog class="history-dialog" (click)="closeOnBackdrop($event)">
+        @if (selectedAppointmentForCare(); as appointment) {
+            <div class="dialog-panel" role="document">
+                <header class="dialog-header">
+                    <div>
+                        <p class="eyebrow">Atención médica</p>
+                        <h2>Atender cita</h2>
+                        <p class="dialog-intro">Paciente: {{ appointment.pacienteNombreCompleto ?? appointment.patient }}</p>
+                    </div>
+                    <button type="button" class="close-button" aria-label="Cerrar atención" (click)="closeAttendDialog()">×</button>
+                </header>
+
+                <section class="patient-summary" aria-label="Datos del paciente">
+                    <div>
+                        <p><strong>DPI:</strong> {{ appointment.dpi ?? 'No registrado' }}</p>
+                        <p><strong>Especialidad:</strong> {{ appointment.medicoEspecialidad ?? appointment.specialty ?? 'No especificada' }}</p>
+                        <p><strong>Fecha y hora:</strong> {{ formatAppointmentTime(appointment.fechaHora, appointment.time) }}</p>
+                        <p><strong>Motivo:</strong> {{ appointment.motivo ?? 'Sin motivo registrado' }}</p>
+                    </div>
+                </section>
+
+                <label>
+                    Observaciones del médico
+                    <textarea
+                        rows="5"
+                        placeholder="Escribe las observaciones de la consulta..."
+                        [value]="doctorObservations()"
+                        (input)="doctorObservations.set($any($event.target).value)">
+                    </textarea>
+                </label>
+
+                <div class="dialog-actions">
+                    <button type="button" class="secondary-button" (click)="closeAttendDialog()">Cancelar</button>
+                    <button type="button" class="primary-button" (click)="savePatientObservations()">Guardar observaciones</button>
+                </div>
+            </div>
+        }
+    </dialog>
 </main>

@@ -124,11 +124,37 @@
 
 .sidebar-footer {
     display: flex;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #dceafa;
+}
+
+.logout-button {
+    display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: auto;
+    width: 100%;
+    padding: 12px 14px;
+    color: #0d4a8a;
+    border: 1px solid #d7e8ff;
+    border-radius: 14px;
+    background: #eef6ff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.logout-button:hover {
+    background: #e3f1ff;
+}
+
+.sidebar-branding {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 16px 12px 0;
-    border-top: 1px solid #dceafa;
 }
 
 .clinic-badge {
@@ -143,12 +169,12 @@
     font-weight: 800;
 }
 
-.sidebar-footer strong {
+.sidebar-branding strong {
     color: #0a2a4a;
     font-size: 12px;
 }
 
-.sidebar-footer span {
+.sidebar-branding span {
     margin-top: 3px;
     color: #6b8aa5;
     font-size: 11px;
