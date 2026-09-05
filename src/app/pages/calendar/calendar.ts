@@ -26,7 +26,11 @@ export class Calendar {
   protected readonly selectedDate = signal(this.toIsoDate(this.today));
   protected readonly isMedico = signal(this.authService.isMedico());
   protected readonly selectedAppointmentForCare = signal<Appointment | null>(null);
-  protected readonly doctorObservations = signal('');
+  protected readonly doctorDiagnosis = signal('');
+  protected readonly doctorComments = signal('');
+  protected readonly doctorTreatment = signal('');
+  protected isSavingDiagnosis = false;
+  protected diagnosisSaveError = '';
 
   constructor() {
     effect(() => {
@@ -97,29 +101,45 @@ export class Calendar {
 
   protected openAttendDialog(appointment: Appointment): void {
     this.selectedAppointmentForCare.set(appointment);
-    this.doctorObservations.set('');
+    this.doctorDiagnosis.set('');
+    this.doctorComments.set('');
+    this.doctorTreatment.set('');
+    this.diagnosisSaveError = '';
     this.doctorDialog?.nativeElement.showModal();
   }
 
   protected closeAttendDialog(): void {
     this.selectedAppointmentForCare.set(null);
-    this.doctorObservations.set('');
+    this.doctorDiagnosis.set('');
+    this.doctorComments.set('');
+    this.doctorTreatment.set('');
+    this.diagnosisSaveError = '';
     this.doctorDialog?.nativeElement.close();
   }
 
-  protected savePatientObservations(): void {
+  protected savePatientDiagnosis(): void {
     const appointment = this.selectedAppointmentForCare();
-    if (!appointment) {
+    if (!appointment?.id || this.isSavingDiagnosis) {
       return;
     }
 
-    console.log('Observaciones del médico para la cita:', {
-      appointmentId: appointment.id,
-      pacienteNombreCompleto: appointment.pacienteNombreCompleto,
-      observaciones: this.doctorObservations(),
-    });
+    this.isSavingDiagnosis = true;
+    this.diagnosisSaveError = '';
 
-    this.closeAttendDialog();
+    this.appointmentService.updateAppointmentDiagnosis(appointment.id, {
+      diagnostico: this.doctorDiagnosis().trim(),
+      comentariosMedico: this.doctorComments().trim(),
+      tratamiento: this.doctorTreatment().trim(),
+    }).subscribe({
+      next: () => {
+        this.isSavingDiagnosis = false;
+        this.closeAttendDialog();
+      },
+      error: () => {
+        this.isSavingDiagnosis = false;
+        this.diagnosisSaveError = 'No se pudo guardar la información médica. Inténtalo de nuevo.';
+      },
+    });
   }
 
   protected closeOnBackdrop(event: MouseEvent): void {

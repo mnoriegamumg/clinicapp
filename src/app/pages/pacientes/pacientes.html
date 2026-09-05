@@ -6,7 +6,7 @@
             <p class="page-intro">Consulta la información de tus pacientes y revisa su historial médico.</p>
         </div>
         <div class="patient-count" aria-label="Cantidad de pacientes">
-            <strong>{{ patients.length }}</strong>
+            <strong>{{ patients().length }}</strong>
             <span>pacientes registrados</span>
         </div>
     </header>
@@ -17,11 +17,11 @@
                 <p class="section-label">Directorio</p>
                 <h2>Pacientes registrados</h2>
             </div>
-            <span class="section-meta">{{ patients.length }} registros</span>
+            <span class="section-meta">{{ patients().length }} registros</span>
         </div>
 
         <div class="patients-list">
-            @for (patient of patients; track patient.id) {
+            @for (patient of patients(); track patient.id) {
                 <article class="patient-row">
                     <div class="patient-avatar" aria-hidden="true">{{ patient.name.charAt(0) }}</div>
                     <div class="patient-info">
@@ -40,5 +40,8 @@
         </div>
     </section>
 
-    <app-medical-history-dialog [patient]="selectedPatient()"></app-medical-history-dialog>
+    <app-medical-history-dialog
+        [patient]="selectedPatient()"
+        (closed)="selectedPatient.set(null)">
+    </app-medical-history-dialog>
 </main>

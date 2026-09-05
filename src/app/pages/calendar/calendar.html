@@ -116,18 +116,44 @@
                 </section>
 
                 <label>
-                    Observaciones del médico
+                    Diagnóstico
                     <textarea
-                        rows="5"
-                        placeholder="Escribe las observaciones de la consulta..."
-                        [value]="doctorObservations()"
-                        (input)="doctorObservations.set($any($event.target).value)">
+                        rows="3"
+                        placeholder="Escribe el diagnóstico de la consulta..."
+                        [value]="doctorDiagnosis()"
+                        (input)="doctorDiagnosis.set($any($event.target).value)">
                     </textarea>
                 </label>
 
+                <label>
+                    Comentarios del médico
+                    <textarea
+                        rows="3"
+                        placeholder="Escribe tus comentarios sobre la consulta..."
+                        [value]="doctorComments()"
+                        (input)="doctorComments.set($any($event.target).value)">
+                    </textarea>
+                </label>
+
+                <label>
+                    Tratamiento
+                    <textarea
+                        rows="3"
+                        placeholder="Describe el tratamiento indicado..."
+                        [value]="doctorTreatment()"
+                        (input)="doctorTreatment.set($any($event.target).value)">
+                    </textarea>
+                </label>
+
+                @if (diagnosisSaveError) {
+                    <p class="form-error" role="alert">{{ diagnosisSaveError }}</p>
+                }
+
                 <div class="dialog-actions">
                     <button type="button" class="secondary-button" (click)="closeAttendDialog()">Cancelar</button>
-                    <button type="button" class="primary-button" (click)="savePatientObservations()">Guardar observaciones</button>
+                    <button type="button" class="primary-button" [disabled]="isSavingDiagnosis" (click)="savePatientDiagnosis()">
+                        {{ isSavingDiagnosis ? 'Guardando...' : 'Guardar información médica' }}
+                    </button>
                 </div>
             </div>
         }

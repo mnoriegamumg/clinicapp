@@ -46,23 +46,35 @@
             <th>Doctor</th>
             <th>Especialidad</th>
             <th>Correo</th>
-            <th>Fecha de ingreso</th>
+            <th>Teléfono</th>
             <th>Horario</th>
+            <th>Fecha de registro</th>
           </tr>
         </thead>
         <tbody>
-          @for (doctor of filteredDoctors(); track doctor.id) {
+          @if (isLoading()) {
+            <tr>
+              <td colspan="6" class="empty-state">Cargando doctores...</td>
+            </tr>
+          } @else if (loadError()) {
+            <tr>
+              <td colspan="6" class="empty-state">{{ loadError() }}</td>
+            </tr>
+          } @else {
+            @for (doctor of filteredDoctors(); track doctor.id) {
             <tr>
               <td>{{ doctor.name }}</td>
               <td>{{ doctor.specialty }}</td>
               <td>{{ doctor.email }}</td>
-              <td>{{ formatDate(doctor.joinedDate) }}</td>
+              <td>{{ doctor.phone }}</td>
               <td>{{ doctor.schedule }}</td>
+              <td>{{ formatDate(doctor.createdAt) }}</td>
             </tr>
-          } @empty {
-            <tr>
-              <td colspan="5" class="empty-state">No se encontraron doctores con los filtros aplicados.</td>
-            </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">No se encontraron doctores con los filtros aplicados.</td>
+              </tr>
+            }
           }
         </tbody>
       </table>

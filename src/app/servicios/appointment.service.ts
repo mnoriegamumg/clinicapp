@@ -10,6 +10,26 @@ export interface CreateAppointmentRequest {
   motivo?: string;
 }
 
+export interface UpdateAppointmentDiagnosisRequest {
+  diagnostico: string;
+  comentariosMedico: string;
+  tratamiento: string;
+}
+
+export interface AppointmentResponse {
+  id: number;
+  pacienteId: number;
+  pacienteNombreCompleto: string;
+  medicoId: number;
+  medicoNombreCompleto: string;
+  medicoEspecialidad: string;
+  fechaHora: string;
+  motivo: string;
+  estado: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
   private readonly http = inject(HttpClient);
@@ -33,5 +53,23 @@ export class AppointmentService {
     return this.http.post<Appointment>(this.createAppointmentUrl, request).pipe(
       tap((appointment) => this.appointmentsState.update((appointments) => [...appointments, appointment])),
     );
+  }
+
+  updateAppointmentDiagnosis(
+    appointmentId: number,
+    request: UpdateAppointmentDiagnosisRequest,
+  ): Observable<Appointment> {
+    return this.http.patch<Appointment>(
+      `http://localhost:8080/api/citas/${appointmentId}/diagnostico`,
+      request,
+    ).pipe(
+      tap((updatedAppointment) => this.appointmentsState.update((appointments) =>
+        appointments.map((appointment) => appointment.id === updatedAppointment.id ? updatedAppointment : appointment),
+      )),
+    );
+  }
+
+  getAppointmentsByPatient(patientId: number): Observable<AppointmentResponse[]> {
+    return this.http.get<AppointmentResponse[]>(`http://localhost:8080/api/citas/paciente/${patientId}`);
   }
 }

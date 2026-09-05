@@ -68,8 +68,8 @@
             <tr>
               <td>{{ appointment.patient }}</td>
               <td>{{ appointment.doctor }}</td>
-              <td>{{ formatDate(appointment.date) }}</td>
-              <td>{{ appointment.time }}</td>
+              <td>{{ formatDate(appointment.dateTime) }}</td>
+              <td>{{ formatTime(appointment.dateTime) }}</td>
               <td>
                 <span class="status-badge" [class]="statusClass(appointment.status)">
                   {{ appointment.status }}

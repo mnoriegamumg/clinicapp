@@ -18,29 +18,35 @@
                 </div>
             </section>
 
-            <dl class="patient-details">
-                <div>
-                    <dt>Tipo de sangre</dt>
-                    <dd>{{ selectedPatient.bloodType }}</dd>
+            <section class="appointments-section" aria-label="Citas del paciente">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">Agenda clínica</p>
+                        <h3>Citas registradas</h3>
+                    </div>
+                    <span>{{ appointments().length }} citas</span>
                 </div>
-                <div>
-                    <dt>Teléfono</dt>
-                    <dd>{{ selectedPatient.phone }}</dd>
-                </div>
-                <div>
-                    <dt>Alergias</dt>
-                    <dd>{{ selectedPatient.allergies }}</dd>
-                </div>
-                <div>
-                    <dt>Última consulta</dt>
-                    <dd>{{ selectedPatient.lastVisit }}</dd>
-                </div>
-            </dl>
 
-            <section class="clinical-note">
-                <p class="section-label">Última evolución</p>
-                <h3>{{ selectedPatient.diagnosis }}</h3>
-                <p>{{ selectedPatient.treatment }}</p>
+                @if (appointments().length) {
+                    <div class="appointments-list">
+                        @for (appointment of appointments(); track appointment.id) {
+                            <article class="appointment-item">
+                                <div>
+                                    <strong>{{ appointment.motivo || 'Consulta general' }}</strong>
+                                    <p>{{ appointment.medicoNombreCompleto }} · {{ appointment.medicoEspecialidad }}</p>
+                                </div>
+                                <div class="appointment-meta">
+                                    <time [attr.datetime]="appointment.fechaHora">
+                                        {{ appointment.fechaHora | date: 'dd/MM/yyyy HH:mm' }}
+                                    </time>
+                                    <span>{{ appointment.estado }}</span>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                } @else {
+                    <p class="empty-appointments">No hay citas registradas para este paciente.</p>
+                }
             </section>
         </div>
     }

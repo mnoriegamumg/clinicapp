@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MedicalHistoryDialog, Patient } from '../../components/medical-history-dialog/medical-history-dialog';
+import { PatientResponse, PatientService } from '../../servicios/patient.service';
 
 @Component({
   selector: 'app-pacientes',
@@ -9,48 +10,56 @@ import { MedicalHistoryDialog, Patient } from '../../components/medical-history-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Pacientes {
-  protected readonly patients: Patient[] = [
-    {
-      id: 1,
-      name: 'Ana Lucía Morales',
-      dpi: '2456 78901 0101',
-      age: 34,
-      phone: '5555-0182',
-      bloodType: 'O positivo',
-      allergies: 'Penicilina',
-      lastVisit: '12 de agosto de 2026',
-      diagnosis: 'Control de hipertensión',
-      treatment: 'Continuar con el tratamiento indicado y controlar la presión arterial cada semana.',
-    },
-    {
-      id: 2,
-      name: 'Carlos Méndez López',
-      dpi: '3187 45620 0202',
-      age: 47,
-      phone: '5555-0246',
-      bloodType: 'A positivo',
-      allergies: 'Ninguna conocida',
-      lastVisit: '5 de agosto de 2026',
-      diagnosis: 'Seguimiento metabólico',
-      treatment: 'Mantener actividad física regular y repetir exámenes de laboratorio en tres meses.',
-    },
-    {
-      id: 3,
-      name: 'Sofía Ramírez Castillo',
-      dpi: '4021 93517 0303',
-      age: 12,
-      phone: '5555-0371',
-      bloodType: 'B positivo',
-      allergies: 'Polen',
-      lastVisit: '28 de julio de 2026',
-      diagnosis: 'Rinitis alérgica',
-      treatment: 'Continuar antihistamínico según necesidad y evitar exposición a los alérgenos identificados.',
-    },
-  ];
+  private readonly patientService = inject(PatientService);
+  protected readonly patients = signal<Patient[]>([]);
 
   protected readonly selectedPatient = signal<Patient | null>(null);
 
+  constructor() {
+    this.patientService.getPatients().subscribe({
+      next: (patients) => this.patients.set(patients.map((patient) => this.toPatient(patient))),
+    });
+  }
+
+  private toPatient(patient: PatientResponse): Patient {
+    const name = [patient.nombre, patient.nombres, patient.apellido, patient.apellidos]
+      .filter((value): value is string => Boolean(value))
+      .join(' ');
+
+    return {
+      id: Number(patient.id ?? patient.pacienteId ?? patient.patientId ?? 0),
+      name: name || 'Paciente sin nombre',
+      dpi: patient.dpi ?? 'No registrado',
+      age: this.calculateAge(patient.fechaNacimiento ?? patient.fecha_nacimiento),
+      phone: patient.telefono ?? 'No registrado',
+      bloodType: 'No registrada',
+      allergies: 'No registradas',
+      lastVisit: 'Sin visitas registradas',
+      diagnosis: 'Sin diagnóstico registrado',
+      treatment: 'Sin tratamiento registrado',
+    };
+  }
+
+  private calculateAge(birthDate?: string): number {
+    if (!birthDate) {
+      return 0;
+    }
+
+    const date = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
+    const hasBirthdayPassed =
+      today.getMonth() > date.getMonth() ||
+      (today.getMonth() === date.getMonth() && today.getDate() >= date.getDate());
+
+    if (!hasBirthdayPassed) {
+      age -= 1;
+    }
+
+    return age;
+  }
+
   protected showHistory(patient: Patient): void {
-    this.selectedPatient.set(patient);
+    this.selectedPatient.set({ ...patient });
   }
 }

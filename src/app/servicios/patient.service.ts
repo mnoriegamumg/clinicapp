@@ -17,6 +17,7 @@ export interface PatientResponse {
   fecha_nacimiento?: string;
   direccion?: string;
   domicilio?: string;
+  createdAt?: string;
 }
 
 export interface CreatePatientRequest {
@@ -36,12 +37,22 @@ export class PatientService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = 'http://localhost:8080/api/pacientes';
 
+  getPatients(): Observable<PatientResponse[]> {
+    return this.http.get<PatientResponse[]>(this.baseUrl);
+  }
+
+  getPatientsByRange(inicio: string, fin: string): Observable<PatientResponse[]> {
+    return this.http.get<PatientResponse[]>(`${this.baseUrl}/rango`, {
+      params: { inicio, fin },
+    });
+  }
+
   searchByDpi(dpi: string): Observable<PatientResponse> {
     return this.http.get<PatientResponse>(`${this.baseUrl}/dpi/${dpi}`);
   }
 
   createPatient(request: CreatePatientRequest): Observable<unknown> {
-    return this.http.post<unknown>(`${this.baseUrl}/crear`, request);
+    return this.http.post<unknown>(`${this.baseUrl}`, request);
   }
 
   updatePatient(dpi: string, request: UpdatePatientRequest): Observable<unknown> {

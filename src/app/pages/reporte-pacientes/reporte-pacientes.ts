@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { PatientResponse, PatientService } from '../../servicios/patient.service';
 
 type PatientReportRecord = {
   id: number;
   name: string;
   dpi: string;
-  age: number;
-  lastVisit: string;
-  doctor: string;
+  email: string;
+  phone: string;
+  birthDate: string;
+  address: string;
+  createdAt: string;
 };
 
 @Component({
@@ -17,60 +20,70 @@ type PatientReportRecord = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReportePacientes {
+  private readonly patientService = inject(PatientService);
   protected readonly startDate = signal('');
   protected readonly endDate = signal('');
 
-  private readonly patients: PatientReportRecord[] = [
-    {
-      id: 1,
-      name: 'Ana Lucía Morales',
-      dpi: '2456 78901 0101',
-      age: 34,
-      lastVisit: '2026-08-12',
-      doctor: 'Dra. García',
-    },
-    {
-      id: 2,
-      name: 'Carlos Méndez López',
-      dpi: '3187 45620 0202',
-      age: 47,
-      lastVisit: '2026-08-05',
-      doctor: 'Dr. Torres',
-    },
-    {
-      id: 3,
-      name: 'Sofía Ramírez Castillo',
-      dpi: '4021 93517 0303',
-      age: 12,
-      lastVisit: '2026-08-28',
-      doctor: 'Dra. Ruiz',
-    },
-    {
-      id: 4,
-      name: 'Mateo Flores Pérez',
-      dpi: '7128 00641 0404',
-      age: 29,
-      lastVisit: '2026-08-18',
-      doctor: 'Dr. Morales',
-    },
-  ];
+  protected readonly patients = signal<PatientReportRecord[]>([]);
+  protected readonly isLoading = signal(false);
+  protected readonly loadError = signal('');
+  protected readonly hasDateRange = computed(() => Boolean(this.startDate() && this.endDate()));
 
-  protected readonly filteredPatients = computed(() => {
-    const start = this.startDate();
-    const end = this.endDate();
+  constructor() {
+    effect(() => {
+      const inicio = this.startDate();
+      const fin = this.endDate();
 
-    return this.patients.filter((patient) => {
-      const matchesStart = !start || patient.lastVisit >= start;
-      const matchesEnd = !end || patient.lastVisit <= end;
-      return matchesStart && matchesEnd;
+      if (!inicio || !fin || inicio > fin) {
+        this.patients.set([]);
+        return;
+      }
+
+      this.isLoading.set(true);
+      this.loadError.set('');
+      this.patientService.getPatientsByRange(inicio, fin).subscribe({
+        next: (patients) => this.patients.set(patients.map((patient) => this.toReportRecord(patient))),
+        error: () => {
+          this.patients.set([]);
+          this.loadError.set('No se pudo cargar el reporte de pacientes. Inténtalo de nuevo.');
+          this.isLoading.set(false);
+        },
+        complete: () => this.isLoading.set(false),
+      });
     });
-  });
+  }
+
+  private toReportRecord(patient: PatientResponse): PatientReportRecord {
+    const name = [patient.nombre, patient.nombres, patient.apellido, patient.apellidos]
+      .filter((value): value is string => Boolean(value))
+      .join(' ');
+
+    return {
+      id: Number(patient.id ?? patient.pacienteId ?? patient.patientId ?? 0),
+      name: name || 'Paciente sin nombre',
+      dpi: patient.dpi ?? 'No registrado',
+      email: patient.email ?? 'No registrado',
+      phone: patient.telefono ?? 'No registrado',
+      birthDate: patient.fechaNacimiento ?? patient.fecha_nacimiento ?? '',
+      address: patient.direccion ?? patient.domicilio ?? 'No registrada',
+      createdAt: patient.createdAt ?? '',
+    };
+  }
 
   protected formatDate(value: string): string {
+    if (!value) {
+      return 'No registrada';
+    }
+
+    const date = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T12:00:00` : value);
+    if (Number.isNaN(date.getTime())) {
+      return 'No registrada';
+    }
+
     return new Intl.DateTimeFormat('es-ES', {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
-    }).format(new Date(`${value}T12:00:00`));
+    }).format(date);
   }
 }

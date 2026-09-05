@@ -36,7 +36,7 @@
         <p class="section-label">Resultado</p>
         <h2>Pacientes registrados</h2>
       </div>
-      <span>{{ filteredPatients().length }} registros</span>
+      <span>{{ patients().length }} registros</span>
     </div>
 
     <div class="table-wrap">
@@ -45,24 +45,42 @@
           <tr>
             <th>Paciente</th>
             <th>DPI</th>
-            <th>Edad</th>
-            <th>Última visita</th>
-            <th>Médico</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Fecha de nacimiento</th>
+            <th>Dirección</th>
+            <th>Creado</th>
           </tr>
         </thead>
         <tbody>
-          @for (patient of filteredPatients(); track patient.id) {
+          @if (isLoading()) {
+            <tr>
+              <td colspan="8" class="empty-state">Cargando pacientes...</td>
+            </tr>
+          } @else if (loadError()) {
+            <tr>
+              <td colspan="8" class="empty-state">{{ loadError() }}</td>
+            </tr>
+          } @else if (!hasDateRange()) {
+            <tr>
+              <td colspan="8" class="empty-state">Selecciona una fecha de inicio y una fecha de fin.</td>
+            </tr>
+          } @else {
+            @for (patient of patients(); track patient.id) {
             <tr>
               <td>{{ patient.name }}</td>
               <td>{{ patient.dpi }}</td>
-              <td>{{ patient.age }} años</td>
-              <td>{{ formatDate(patient.lastVisit) }}</td>
-              <td>{{ patient.doctor }}</td>
+              <td>{{ patient.email }}</td>
+              <td>{{ patient.phone }}</td>
+              <td>{{ formatDate(patient.birthDate) }}</td>
+              <td>{{ patient.address }}</td>
+              <td>{{ formatDate(patient.createdAt) }}</td>
             </tr>
-          } @empty {
-            <tr>
-              <td colspan="5" class="empty-state">No se encontraron pacientes con los filtros aplicados.</td>
-            </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="empty-state">No se encontraron pacientes en el rango indicado.</td>
+              </tr>
+            }
           }
         </tbody>
       </table>
