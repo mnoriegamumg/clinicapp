@@ -61,6 +61,7 @@
             <th>Fecha</th>
             <th>Hora</th>
             <th>Estado</th>
+            <th>Receta</th>
           </tr>
         </thead>
         <tbody>
@@ -75,14 +76,60 @@
                   {{ appointment.status }}
                 </span>
               </td>
+              <td>
+                <button type="button" class="recipe-button" (click)="openPrescription(appointment)">
+                  Imprimir receta
+                </button>
+              </td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="5" class="empty-state">No se encontraron citas con los filtros aplicados.</td>
+              <td colspan="6" class="empty-state">No se encontraron citas con los filtros aplicados.</td>
             </tr>
           }
         </tbody>
       </table>
     </div>
   </section>
+
+  <dialog id="prescriptionDialog" #prescriptionDialog class="prescription-dialog" (click)="closeOnBackdrop($event)">
+    @if (selectedPrescription(); as prescription) {
+      <article class="prescription-panel">
+        <header class="prescription-header">
+          <div>
+            <p class="eyebrow">ProsaMed</p>
+            <h2>Receta médica</h2>
+            <p>Documento de atención y tratamiento indicado.</p>
+          </div>
+          <button type="button" class="close-button" aria-label="Cerrar receta" (click)="closePrescription()">×</button>
+        </header>
+
+        <section class="prescription-patient" aria-label="Datos de la cita">
+          <strong>{{ prescription.patient }}</strong>
+          <span>Dr. {{ prescription.doctor }}</span>
+          <span>{{ formatDate(prescription.dateTime) }} · {{ formatTime(prescription.dateTime) }}</span>
+        </section>
+
+        <section class="prescription-content" aria-label="Indicaciones médicas">
+          <div>
+            <h3>Diagnóstico</h3>
+            <p>{{ prescription.diagnosis }}</p>
+          </div>
+          <div>
+            <h3>Tratamiento</h3>
+            <p>{{ prescription.treatment }}</p>
+          </div>
+          <div>
+            <h3>Comentarios del médico</h3>
+            <p>{{ prescription.doctorComments }}</p>
+          </div>
+        </section>
+
+        <footer class="prescription-actions">
+          <button type="button" class="secondary-button" (click)="closePrescription()">Cerrar</button>
+          <button type="button" class="primary-button" (click)="printPrescription()">Generar PDF</button>
+        </footer>
+      </article>
+    }
+  </dialog>
 </main>

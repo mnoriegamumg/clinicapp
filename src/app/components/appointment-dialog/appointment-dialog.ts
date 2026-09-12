@@ -4,13 +4,18 @@ import { AppointmentService } from '../../servicios/appointment.service';
 import { PatientResponse, PatientService } from '../../servicios/patient.service';
 import { ViewRefreshService } from '../../servicios/view-refresh.service';
 
+export type AppointmentStatus = 'ATENDIDA' | 'CANCELADA' | 'CONFIRMADA' | 'PENDIENTE';
+
 export type Appointment = {
   id?: number;
   createdAt?: string | null;
   updatedAt?: string | null;
-  estado?: string;
+  estado?: AppointmentStatus;
   fechaHora?: string;
   motivo?: string;
+  diagnostico?: string;
+  comentariosMedico?: string;
+  tratamiento?: string;
   medicoEspecialidad?: string;
   medicoId?: number;
   medicoNombreCompleto?: string;

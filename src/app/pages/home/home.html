@@ -7,7 +7,8 @@
                 En ProsaMed combinamos experiencia médica y atención humana para acompañarte en cada paso.
             </p>
             <div class="welcome-actions">
-                <a class="primary-button" routerLink="/calendario">Agendar una cita <span aria-hidden="true">→</span></a>
+                <a class="primary-button" routerLink="/calendario">Agendar una cita <span
+                        aria-hidden="true">→</span></a>
                 <a class="secondary-link" href="#especialidades">Conoce nuestras especialidades</a>
             </div>
         </div>
@@ -21,7 +22,8 @@
                 <span>Centro Médico</span>
             </div>
             <div class="floating-note note-top"><strong>+15</strong><span>años cuidando de ti</span></div>
-            <div class="floating-note note-bottom"><span class="status-dot" aria-hidden="true"></span><span>Atención con calidez</span></div>
+            <div class="floating-note note-bottom"><span class="status-dot" aria-hidden="true"></span><span>Atención con
+                    calidez</span></div>
         </div>
     </section>
 
@@ -42,12 +44,13 @@
 
         <div class="specialties-grid">
             @for (specialty of specialties; track specialty.name) {
-                <article class="specialty-card">
-                    <span class="specialty-icon" aria-hidden="true">{{ specialty.icon }}</span>
-                    <h3>{{ specialty.name }}</h3>
-                    <p>{{ specialty.description }}</p>
-                    <a routerLink="/calendario" [attr.aria-label]="'Agendar cita de ' + specialty.name">Ver disponibilidad <span aria-hidden="true">↗</span></a>
-                </article>
+            <article class="specialty-card">
+                <span class="specialty-icon" aria-hidden="true">{{ specialty.icon }}</span>
+                <h3>{{ specialty.name }}</h3>
+                <p>{{ specialty.description }}</p>
+                <a routerLink="/calendario" [attr.aria-label]="'Agendar cita de ' + specialty.name">Ver disponibilidad
+                    <span aria-hidden="true">↗</span></a>
+            </article>
             }
         </div>
     </section>

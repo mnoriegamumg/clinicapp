@@ -26,6 +26,8 @@ export interface AppointmentResponse {
   fechaHora: string;
   motivo: string;
   estado: string;
+  comentariosMedico?: string;
+  tratamiento?: string;
   createdAt: string;
   updatedAt: string;
 }

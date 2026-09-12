@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, effect, inject, signal } from '@angular/core';
+import jsPDF from 'jspdf';
 import { RouterLink } from '@angular/router';
 import { Appointment, AppointmentDialog } from '../../components/appointment-dialog/appointment-dialog';
 import { AppointmentService } from '../../servicios/appointment.service';
@@ -21,11 +22,13 @@ export class Calendar {
   private readonly appointmentService = inject(AppointmentService);
   private readonly authService = inject(AuthService);
   @ViewChild('doctorDialog') private readonly doctorDialog?: ElementRef<HTMLDialogElement>;
+  @ViewChild('prescriptionDialog') private readonly prescriptionDialog?: ElementRef<HTMLDialogElement>;
   private readonly today = new Date();
   protected readonly currentMonth = signal(new Date(this.today.getFullYear(), this.today.getMonth(), 1));
   protected readonly selectedDate = signal(this.toIsoDate(this.today));
   protected readonly isMedico = signal(this.authService.isMedico());
   protected readonly selectedAppointmentForCare = signal<Appointment | null>(null);
+  protected readonly selectedAppointmentForPrescription = signal<Appointment | null>(null);
   protected readonly doctorDiagnosis = signal('');
   protected readonly doctorComments = signal('');
   protected readonly doctorTreatment = signal('');
@@ -117,6 +120,54 @@ export class Calendar {
     this.doctorDialog?.nativeElement.close();
   }
 
+  protected openPrescriptionDialog(appointment: Appointment): void {
+    this.selectedAppointmentForPrescription.set(appointment);
+    this.prescriptionDialog?.nativeElement.showModal();
+  }
+
+  protected closePrescriptionDialog(): void {
+    this.selectedAppointmentForPrescription.set(null);
+    this.prescriptionDialog?.nativeElement.close();
+  }
+
+  protected generatePrescriptionPdf(): void {
+    const appointment = this.selectedAppointmentForPrescription();
+    if (!appointment) {
+      return;
+    }
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    const contentWidth = pageWidth - margin * 2;
+    let y = 24;
+
+    pdf.setTextColor(31, 111, 235);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(11);
+    pdf.text('PROSAMED', margin, y);
+
+    y += 14;
+    pdf.setTextColor(10, 35, 67);
+    pdf.setFontSize(22);
+    pdf.text('Receta médica', margin, y);
+    y += 14;
+    pdf.setDrawColor(207, 226, 255);
+    pdf.line(margin, y, pageWidth - margin, y);
+    y += 14;
+
+    y = this.addPrescriptionPdfField(pdf, 'Paciente', appointment.pacienteNombreCompleto ?? appointment.patient ?? 'Paciente sin nombre', margin, y);
+    y = this.addPrescriptionPdfField(pdf, 'Médico', appointment.medicoNombreCompleto ?? 'Médico sin nombre', margin, y + 12);
+    y = this.addPrescriptionPdfField(pdf, 'Fecha y hora', this.formatPrescriptionDate(appointment.fechaHora, appointment.date, appointment.time), margin, y + 12);
+    y += 14;
+
+    y = this.addPrescriptionPdfSection(pdf, 'Diagnóstico', appointment.diagnostico ?? 'No registrado', margin, y, contentWidth);
+    y = this.addPrescriptionPdfSection(pdf, 'Tratamiento', appointment.tratamiento ?? 'No registrado', margin, y + 8, contentWidth);
+    this.addPrescriptionPdfSection(pdf, 'Comentarios del médico', appointment.comentariosMedico ?? 'No registrados', margin, y + 8, contentWidth);
+
+    pdf.save(`receta-${appointment.id ?? 'cita'}.pdf`);
+  }
+
   protected savePatientDiagnosis(): void {
     const appointment = this.selectedAppointmentForCare();
     if (!appointment?.id || this.isSavingDiagnosis) {
@@ -144,8 +195,58 @@ export class Calendar {
 
   protected closeOnBackdrop(event: MouseEvent): void {
     if (event.target === event.currentTarget) {
-      this.closeAttendDialog();
+      const dialog = event.currentTarget as HTMLDialogElement;
+      if (dialog === this.prescriptionDialog?.nativeElement) {
+        this.closePrescriptionDialog();
+      } else {
+        this.closeAttendDialog();
+      }
     }
+  }
+
+  private addPrescriptionPdfField(pdf: jsPDF, label: string, value: string, x: number, y: number): number {
+    pdf.setTextColor(77, 103, 136);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(9);
+    pdf.text(label.toUpperCase(), x, y);
+    pdf.setTextColor(16, 42, 67);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(11);
+    pdf.text(value, x, y + 6);
+    return y + 6;
+  }
+
+  private addPrescriptionPdfSection(pdf: jsPDF, title: string, value: string, x: number, y: number, width: number): number {
+    pdf.setTextColor(41, 74, 117);
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(title.toUpperCase(), x, y);
+    pdf.setTextColor(16, 42, 67);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+    const lines = pdf.splitTextToSize(value, width);
+    pdf.text(lines, x, y + 7);
+    return y + 7 + lines.length * 6;
+  }
+
+  protected formatPrescriptionDate(fechaHora?: string, date?: string, time?: string): string {
+    const value = fechaHora ?? (date && time ? `${date}T${time}` : date);
+    if (!value) {
+      return 'Fecha no registrada';
+    }
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return 'Fecha no registrada';
+    }
+
+    return new Intl.DateTimeFormat('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(parsedDate);
   }
 
   protected formatAppointmentTime(fechaHora?: string, fallback?: string): string {

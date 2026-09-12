@@ -181,6 +181,128 @@
   color: #b42318;
 }
 
+.recipe-button,
+.primary-button,
+.secondary-button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.recipe-button,
+.primary-button {
+  color: #fff;
+  background: #1f6feb;
+}
+
+.recipe-button:hover,
+.primary-button:hover {
+  background: #1557b0;
+}
+
+.secondary-button {
+  color: #294a75;
+  background: #edf5ff;
+}
+
+.prescription-dialog {
+  width: min(600px, calc(100% - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(0, 40, 90, 0.24);
+}
+
+.prescription-dialog::backdrop {
+  background: rgba(7, 34, 63, 0.42);
+  backdrop-filter: blur(4px);
+}
+
+.prescription-panel {
+  padding: 2rem;
+}
+
+.prescription-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.prescription-header h2 {
+  margin: 0 0 0.4rem;
+  color: #0a2343;
+}
+
+.prescription-header p:last-child {
+  margin: 0;
+  color: #4d6788;
+}
+
+.close-button {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 50%;
+  color: #507491;
+  background: #eaf4ff;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.prescription-patient {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f1f8ff;
+}
+
+.prescription-patient span {
+  color: #4d6788;
+  font-size: 0.9rem;
+}
+
+.prescription-content {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.prescription-content div {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e4edf7;
+}
+
+.prescription-content h3 {
+  margin: 0 0 0.45rem;
+  color: #294a75;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.prescription-content p {
+  margin: 0;
+  color: #102a43;
+  white-space: pre-wrap;
+}
+
+.prescription-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
 .empty-state {
   text-align: center;
   color: #5b7188;
@@ -200,5 +322,45 @@
 
   .filters-card {
     grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  @page {
+    margin: 18mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .prescription-dialog {
+    position: static;
+    display: block;
+    width: auto;
+    max-height: none;
+    margin: 0;
+    box-shadow: none;
+    visibility: visible;
+  }
+
+  body.printing-prescription > *:not(app-root),
+  body.printing-prescription app-root > *:not(app-reporte-citas),
+  body.printing-prescription .report-page > *:not(#prescriptionDialog) {
+    display: none;
+  }
+
+  .prescription-dialog * {
+    visibility: visible;
+  }
+
+  .prescription-dialog::backdrop,
+  .prescription-actions,
+  .close-button {
+    display: none;
+  }
+
+  .prescription-panel {
+    padding: 0;
   }
 }

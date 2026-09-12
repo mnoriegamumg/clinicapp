@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { Appointment } from '../../components/appointment-dialog/appointment-dialog';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import jsPDF from 'jspdf';
+import { Appointment, AppointmentStatus } from '../../components/appointment-dialog/appointment-dialog';
 import { AppointmentService } from '../../servicios/appointment.service';
-
-type AppointmentStatus = 'PENDIENTE' | 'PROGRAMADA' | 'CONFIRMADA' | 'COMPLETADA' | 'CANCELADA';
 
 type AppointmentRecord = {
   id: number;
@@ -11,6 +10,9 @@ type AppointmentRecord = {
   dateTime: string;
   reason: string;
   status: AppointmentStatus;
+  diagnosis: string;
+  doctorComments: string;
+  treatment: string;
 };
 
 @Component({
@@ -22,12 +24,12 @@ type AppointmentRecord = {
 })
 export class ReporteCitas {
   private readonly appointmentService = inject(AppointmentService);
+  @ViewChild('prescriptionDialog') private readonly prescriptionDialog?: ElementRef<HTMLDialogElement>;
   protected readonly statusOptions: Array<'Todos' | AppointmentStatus> = [
     'Todos',
     'PENDIENTE',
-    'PROGRAMADA',
     'CONFIRMADA',
-    'COMPLETADA',
+    'ATENDIDA',
     'CANCELADA',
   ];
 
@@ -37,6 +39,7 @@ export class ReporteCitas {
   protected readonly appointments = signal<AppointmentRecord[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly loadError = signal('');
+  protected readonly selectedPrescription = signal<AppointmentRecord | null>(null);
 
   protected readonly filteredAppointments = computed(() => {
     const start = this.startDate();
@@ -87,8 +90,103 @@ export class ReporteCitas {
       doctor: appointment.medicoNombreCompleto ?? 'Médico sin nombre',
       dateTime: appointment.fechaHora ?? '',
       reason: appointment.motivo ?? 'Sin motivo',
-      status: this.statusOptions.includes(status) && status !== 'Todos' ? status : 'PENDIENTE',
+      status: this.statusOptions.includes(status) ? status : 'PENDIENTE',
+      diagnosis: appointment.diagnostico ?? 'No registrado',
+      doctorComments: appointment.comentariosMedico ?? 'No registrados',
+      treatment: appointment.tratamiento ?? 'No registrado',
     };
+  }
+
+  protected openPrescription(appointment: AppointmentRecord): void {
+    this.selectedPrescription.set(appointment);
+    this.prescriptionDialog?.nativeElement.showModal();
+  }
+
+  protected closePrescription(): void {
+    this.selectedPrescription.set(null);
+    this.prescriptionDialog?.nativeElement.close();
+  }
+
+  protected printPrescription(): void {
+    const prescription = this.selectedPrescription();
+    if (!prescription) {
+      return;
+    }
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let y = 24;
+
+    pdf.setTextColor(31, 111, 235);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('PROSAMED', margin, y);
+
+    y += 14;
+    pdf.setTextColor(10, 35, 67);
+    pdf.setFontSize(22);
+    pdf.text('Receta médica', margin, y);
+
+    y += 14;
+    pdf.setDrawColor(207, 226, 255);
+    pdf.line(margin, y, pageWidth - margin, y);
+    y += 14;
+
+    pdf.setFontSize(11);
+    this.addPdfField(pdf, 'Paciente', prescription.patient, margin, y);
+    y += 17;
+    this.addPdfField(pdf, 'Médico', prescription.doctor, margin, y);
+    y += 17;
+    this.addPdfField(
+      pdf,
+      'Fecha y hora',
+      `${this.formatDate(prescription.dateTime)} - ${this.formatTime(prescription.dateTime)}`,
+      margin,
+      y,
+    );
+    y += 22;
+
+    y = this.addPdfSection(pdf, 'Diagnóstico', prescription.diagnosis, margin, y, pageWidth - margin * 2);
+    y = this.addPdfSection(pdf, 'Tratamiento', prescription.treatment, margin, y + 8, pageWidth - margin * 2);
+    this.addPdfSection(pdf, 'Comentarios del médico', prescription.doctorComments, margin, y + 8, pageWidth - margin * 2);
+
+    pdf.setTextColor(100, 128, 148);
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('Documento generado por ProsaMed', margin, 280);
+    pdf.save(`receta-${prescription.id}.pdf`);
+  }
+
+  private addPdfField(pdf: jsPDF, label: string, value: string, x: number, y: number): void {
+    pdf.setTextColor(77, 103, 136);
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(label.toUpperCase(), x, y);
+    pdf.setTextColor(16, 42, 67);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(value, x, y + 6);
+  }
+
+  private addPdfSection(pdf: jsPDF, title: string, value: string, x: number, y: number, width: number): number {
+    pdf.setTextColor(41, 74, 117);
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(title.toUpperCase(), x, y);
+    pdf.setTextColor(16, 42, 67);
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'normal');
+
+    const lines = pdf.splitTextToSize(value, width);
+    pdf.text(lines, x, y + 7);
+    return y + 7 + lines.length * 6;
+  }
+
+  protected closeOnBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.closePrescription();
+    }
   }
 
   protected formatDate(value: string): string {
@@ -127,9 +225,8 @@ export class ReporteCitas {
   protected statusClass(status: AppointmentStatus): string {
     const map: Record<AppointmentStatus, string> = {
       PENDIENTE: 'status-programada',
-      PROGRAMADA: 'status-programada',
       CONFIRMADA: 'status-programada',
-      COMPLETADA: 'status-completada',
+      ATENDIDA: 'status-completada',
       CANCELADA: 'status-cancelada',
     };
 

@@ -32,6 +32,12 @@
     margin-bottom: 24px;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .eyebrow,
 .section-label {
     margin: 0 0 6px;
@@ -72,6 +78,22 @@ h2 {
     cursor: pointer;
     font-size: 24px;
     line-height: 1;
+}
+
+.print-button {
+    border: 0;
+    border-radius: 10px;
+    padding: 9px 12px;
+    color: #fff;
+    background: #1a6bc4;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.print-button:hover {
+    background: #14569f;
 }
 
 .patient-summary {

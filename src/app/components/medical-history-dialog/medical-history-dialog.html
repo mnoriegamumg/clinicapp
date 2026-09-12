@@ -7,7 +7,10 @@
                     <h2>Historial médico</h2>
                     <p class="dialog-intro">Información registrada de {{ selectedPatient.name }}.</p>
                 </div>
-                <button type="button" class="close-button" aria-label="Cerrar historial" (click)="close()">×</button>
+                <div class="header-actions">
+                    <button type="button" class="print-button" (click)="printHistory()">Generar PDF</button>
+                    <button type="button" class="close-button" aria-label="Cerrar historial" (click)="close()">×</button>
+                </div>
             </header>
 
             <section class="patient-summary" aria-label="Datos del paciente">
@@ -34,6 +37,8 @@
                                 <div>
                                     <strong>{{ appointment.motivo || 'Consulta general' }}</strong>
                                     <p>{{ appointment.medicoNombreCompleto }} · {{ appointment.medicoEspecialidad }}</p>
+                                    <p><strong>Tratamiento:</strong> {{ appointment.tratamiento || 'No registrado' }}</p>
+                                    <p><strong>Comentarios del médico:</strong> {{ appointment.comentariosMedico || 'No registrados' }}</p>
                                 </div>
                                 <div class="appointment-meta">
                                     <time [attr.datetime]="appointment.fechaHora">
