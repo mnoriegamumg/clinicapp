@@ -10,22 +10,33 @@
         </div>
 
         <form #appointmentForm (submit)="$event.preventDefault(); submit(appointmentForm)">
-            <label>
-                DPI
+            @if (!noDpi) {
+                <label>
+                    DPI
+                    <input
+                        name="dpi"
+                        type="text"
+                        placeholder="0000 00000 0000"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        maxlength="15"
+                        pattern="[0-9 ]{13,15}"
+                        (input)="schedulePatientSearch(appointmentForm)"
+                        (change)="searchPatient(appointmentForm)"
+                        [required]="!noDpi">
+                </label>
+            }
+
+            <label class="checkbox-field">
                 <input
-                    name="dpi"
-                    type="text"
-                    placeholder="0000 00000 0000"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    maxlength="15"
-                    pattern="[0-9 ]{13,15}"
-                    (input)="schedulePatientSearch(appointmentForm)"
-                    (change)="searchPatient(appointmentForm)"
-                    required>
+                    name="noDpi"
+                    type="checkbox"
+                    [checked]="noDpi"
+                    (change)="toggleNoDpi($any($event.target).checked)">
+                El paciente no tiene DPI
             </label>
 
-            @if (patientLoading) {
+            @if (patientLoading && !noDpi) {
                 <p class="form-hint" role="status">Buscando paciente...</p>
             }
 

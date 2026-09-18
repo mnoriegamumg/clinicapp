@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Appointment } from '../components/appointment-dialog/appointment-dialog';
+import { API_BASE_URL } from './api.config';
 
 export interface CreateAppointmentRequest {
   pacienteId: number;
@@ -35,8 +36,9 @@ export interface AppointmentResponse {
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
   private readonly http = inject(HttpClient);
-  private readonly appointmentsUrl = 'http://localhost:8080/api/citas/rango';
-  private readonly createAppointmentUrl = 'http://localhost:8080/api/citas';
+  private readonly baseUrl = `${inject(API_BASE_URL)}/api/citas`;
+  private readonly appointmentsUrl = `${this.baseUrl}/rango`;
+  private readonly createAppointmentUrl = this.baseUrl;
   private readonly appointmentsState = signal<Appointment[]>([]);
 
   readonly appointments = this.appointmentsState.asReadonly();
@@ -62,7 +64,7 @@ export class AppointmentService {
     request: UpdateAppointmentDiagnosisRequest,
   ): Observable<Appointment> {
     return this.http.patch<Appointment>(
-      `http://localhost:8080/api/citas/${appointmentId}/diagnostico`,
+      `${this.baseUrl}/${appointmentId}/diagnostico`,
       request,
     ).pipe(
       tap((updatedAppointment) => this.appointmentsState.update((appointments) =>
@@ -72,6 +74,14 @@ export class AppointmentService {
   }
 
   getAppointmentsByPatient(patientId: number): Observable<AppointmentResponse[]> {
-    return this.http.get<AppointmentResponse[]>(`http://localhost:8080/api/citas/paciente/${patientId}`);
+    return this.http.get<AppointmentResponse[]>(`${this.baseUrl}/paciente/${patientId}`);
+  }
+
+  cancelAppointment(appointmentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${appointmentId}`).pipe(
+      tap(() => this.appointmentsState.update((appointments) =>
+        appointments.filter((appointment) => appointment.id !== appointmentId),
+      )),
+    );
   }
 }

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, injec
 import jsPDF from 'jspdf';
 import { Appointment, AppointmentStatus } from '../../components/appointment-dialog/appointment-dialog';
 import { AppointmentService } from '../../servicios/appointment.service';
+import { openPdfForPrinting } from '../../servicios/pdf-print';
 
 type AppointmentRecord = {
   id: number;
@@ -40,6 +41,8 @@ export class ReporteCitas {
   protected readonly isLoading = signal(false);
   protected readonly loadError = signal('');
   protected readonly selectedPrescription = signal<AppointmentRecord | null>(null);
+  protected readonly cancelingId = signal<number | null>(null);
+  protected readonly cancelError = signal('');
 
   protected readonly filteredAppointments = computed(() => {
     const start = this.startDate();
@@ -102,6 +105,37 @@ export class ReporteCitas {
     this.prescriptionDialog?.nativeElement.showModal();
   }
 
+  protected canCancel(appointment: AppointmentRecord): boolean {
+    return appointment.status !== 'ATENDIDA' && appointment.status !== 'CANCELADA';
+  }
+
+  protected cancelAppointment(appointment: AppointmentRecord): void {
+    if (!this.canCancel(appointment) || this.cancelingId() !== null) {
+      return;
+    }
+
+    const confirmed = typeof window === 'undefined' || window.confirm('¿Cancelar esta cita?');
+    if (!confirmed) {
+      return;
+    }
+
+    this.cancelingId.set(appointment.id);
+    this.cancelError.set('');
+
+    this.appointmentService.cancelAppointment(appointment.id).subscribe({
+      next: () => {
+        this.appointments.update((appointments) =>
+          appointments.filter((item) => item.id !== appointment.id),
+        );
+        this.cancelingId.set(null);
+      },
+      error: () => {
+        this.cancelError.set('No se pudo cancelar la cita. Inténtalo de nuevo.');
+        this.cancelingId.set(null);
+      },
+    });
+  }
+
   protected closePrescription(): void {
     this.selectedPrescription.set(null);
     this.prescriptionDialog?.nativeElement.close();
@@ -155,7 +189,7 @@ export class ReporteCitas {
     pdf.setFontSize(9);
     pdf.setFont('helvetica', 'normal');
     pdf.text('Documento generado por ProsaMed', margin, 280);
-    pdf.save(`receta-${prescription.id}.pdf`);
+    openPdfForPrinting(pdf);
   }
 
   private addPdfField(pdf: jsPDF, label: string, value: string, x: number, y: number): void {

@@ -108,6 +108,44 @@ h1 {
     font-size: 24px;
 }
 
+.patients-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 0;
+}
+
+.search-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    color: #0a2a4a;
+    background: #f8fbff;
+    font: inherit;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #1f6feb;
+}
+
+.search-hint {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.patients-empty {
+    padding: 24px 0;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+}
+
 .patients-list {
     display: grid;
 }
@@ -186,6 +224,30 @@ h1 {
     background: var(--blue-dark);
 }
 
+.patient-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-button {
+    padding: 11px 14px;
+    border: 1px solid #b9d8f7;
+    border-radius: 20px;
+    color: var(--blue-dark);
+    background: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.edit-button:hover {
+    color: #fff;
+    background: var(--blue);
+}
+
 button:focus-visible {
     outline: 3px solid rgba(26, 107, 196, 0.3);
     outline-offset: 3px;
@@ -220,7 +282,7 @@ button:focus-visible {
         margin-left: 62px;
     }
 
-    .history-button {
+    .patient-actions {
         margin-left: auto;
     }
 }

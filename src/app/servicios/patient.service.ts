@@ -51,11 +51,17 @@ export class PatientService {
     return this.http.get<PatientResponse>(`${this.baseUrl}/dpi/${dpi}`);
   }
 
+  searchByName(termino: string): Observable<PatientResponse[]> {
+    return this.http.get<PatientResponse[]>(`${this.baseUrl}/buscar-por-nombre-apellido`, {
+      params: { termino },
+    });
+  }
+
   createPatient(request: CreatePatientRequest): Observable<unknown> {
     return this.http.post<unknown>(`${this.baseUrl}`, request);
   }
 
-  updatePatient(dpi: string, request: UpdatePatientRequest): Observable<unknown> {
-    return this.http.put<unknown>(`${this.baseUrl}/actualizar/${dpi}`, request);
+  updatePatient(id: string, request: UpdatePatientRequest): Observable<unknown> {
+    return this.http.put<unknown>(`${this.baseUrl}/${id}`, request);
   }
 }

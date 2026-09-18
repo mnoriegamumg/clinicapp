@@ -1,0 +1,72 @@
+<dialog #dialog class="patient-edit-dialog" (click)="closeOnBackdrop($event)">
+  @if (patient(); as current) {
+    <div class="dialog-panel" role="document">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">Gestión clínica</p>
+          <h2>Editar paciente</h2>
+          <p class="dialog-intro">Actualiza los datos del paciente.</p>
+        </div>
+        <button type="button" class="close-button" aria-label="Cerrar diálogo" (click)="close()">×</button>
+      </div>
+
+      <form #editForm (submit)="$event.preventDefault(); submit(editForm)">
+        <div class="form-row">
+          <label>
+            Nombres
+            <input name="nombre" type="text" [value]="nombre()" placeholder="Nombres" required>
+          </label>
+          <label>
+            Apellidos
+            <input name="apellido" type="text" [value]="apellido()" placeholder="Apellidos" required>
+          </label>
+        </div>
+
+        <label>
+          DPI
+          <input
+            name="dpi"
+            type="text"
+            [value]="current.dpi ?? ''"
+            placeholder="0000 00000 0000"
+            inputmode="numeric"
+            autocomplete="off"
+            required>
+        </label>
+
+        <div class="form-row">
+          <label>
+            Email
+            <input name="email" type="email" [value]="current.email ?? ''" placeholder="correo@ejemplo.com">
+          </label>
+          <label>
+            Teléfono
+            <input name="telefono" type="tel" [value]="current.telefono ?? ''" placeholder="5555-1234">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Fecha de nacimiento
+            <input name="fechaNacimiento" type="date" [value]="fechaNacimiento()">
+          </label>
+          <label>
+            Dirección
+            <input name="direccion" type="text" [value]="direccion()" placeholder="Dirección">
+          </label>
+        </div>
+
+        @if (saveError()) {
+          <p class="form-error" role="alert">{{ saveError() }}</p>
+        }
+
+        <div class="dialog-actions">
+          <button type="button" class="secondary-button" (click)="close()">Cancelar</button>
+          <button type="submit" class="primary-button" [disabled]="isSaving()">
+            {{ isSaving() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</dialog>

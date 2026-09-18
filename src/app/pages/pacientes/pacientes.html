@@ -6,7 +6,7 @@
             <p class="page-intro">Consulta la información de tus pacientes y revisa su historial médico.</p>
         </div>
         <div class="patient-count" aria-label="Cantidad de pacientes">
-            <strong>{{ patients().length }}</strong>
+            <strong>{{ rows().length }}</strong>
             <span>pacientes registrados</span>
         </div>
     </header>
@@ -17,25 +17,45 @@
                 <p class="section-label">Directorio</p>
                 <h2>Pacientes registrados</h2>
             </div>
-            <span class="section-meta">{{ patients().length }} registros</span>
+            <span class="section-meta">{{ rows().length }} registros</span>
+        </div>
+
+        <div class="patients-search">
+            <input
+                type="search"
+                class="search-input"
+                placeholder="Buscar por nombre o apellido"
+                aria-label="Buscar pacientes por nombre o apellido"
+                [value]="searchTerm()"
+                (input)="onSearch($any($event.target).value)">
+            @if (isSearching()) {
+                <span class="search-hint" role="status">Buscando...</span>
+            }
         </div>
 
         <div class="patients-list">
-            @for (patient of patients(); track patient.id) {
+            @for (row of rows(); track row.view.id) {
                 <article class="patient-row">
-                    <div class="patient-avatar" aria-hidden="true">{{ patient.name.charAt(0) }}</div>
+                    <div class="patient-avatar" aria-hidden="true">{{ row.view.name.charAt(0) }}</div>
                     <div class="patient-info">
-                        <h3>{{ patient.name }}</h3>
-                        <p>DPI {{ patient.dpi }} · {{ patient.age }} años</p>
+                        <h3>{{ row.view.name }}</h3>
+                        <p>DPI {{ row.view.dpi }} · {{ row.view.age }} años</p>
                     </div>
                     <div class="patient-contact">
                         <span>Teléfono</span>
-                        <strong>{{ patient.phone }}</strong>
+                        <strong>{{ row.view.phone }}</strong>
                     </div>
-                    <button type="button" class="history-button" (click)="showHistory(patient)">
-                        Ver historial <span aria-hidden="true">→</span>
-                    </button>
+                    <div class="patient-actions">
+                        <button type="button" class="edit-button" (click)="editPatient(row)">
+                            Editar
+                        </button>
+                        <button type="button" class="history-button" (click)="showHistory(row.view)">
+                            Ver historial <span aria-hidden="true">→</span>
+                        </button>
+                    </div>
                 </article>
+            } @empty {
+                <p class="patients-empty">No se encontraron pacientes.</p>
             }
         </div>
     </section>
@@ -44,4 +64,10 @@
         [patient]="selectedPatient()"
         (closed)="selectedPatient.set(null)">
     </app-medical-history-dialog>
+
+    <app-patient-edit-dialog
+        [patient]="editingPatient()"
+        (saved)="onPatientSaved($event)"
+        (closed)="editingPatient.set(null)">
+    </app-patient-edit-dialog>
 </main>

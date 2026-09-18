@@ -209,6 +209,34 @@
   background: #edf5ff;
 }
 
+.cancel-button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #b42318;
+  background: #fff0f0;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: #ffe0e0;
+}
+
+.cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-error {
+  margin: 0.75rem 0 0;
+  color: #b42318;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .prescription-dialog {
   width: min(600px, calc(100% - 32px));
   max-height: calc(100vh - 32px);

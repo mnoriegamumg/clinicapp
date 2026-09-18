@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
 import jsPDF from 'jspdf';
 import { AppointmentResponse, AppointmentService } from '../../servicios/appointment.service';
+import { openPdfForPrinting } from '../../servicios/pdf-print';
 
 export type Patient = {
   id: number;
@@ -144,7 +145,7 @@ export class MedicalHistoryDialog {
       pdf.text('No hay citas registradas para este paciente.', margin, y);
     }
 
-    pdf.save(`historial-${patient.id}.pdf`);
+    openPdfForPrinting(pdf);
   }
 
   private addPdfField(pdf: jsPDF, label: string, value: string, x: number, y: number): number {

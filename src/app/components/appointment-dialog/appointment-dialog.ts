@@ -47,8 +47,26 @@ export class AppointmentDialog {
   protected patientLoading = false;
   protected patientSearchError = '';
   protected showAdditionalPatientData = false;
+  protected noDpi = false;
   private searchTimeoutId: number | null = null;
   private patientId: number | null = null;
+
+  /**
+   * Toggles the "patient has no DPI" mode. When enabled, the DPI field is hidden
+   * and the full patient form is always shown so a new patient can be created
+   * (the DPI will be generated from a timestamp on submit).
+   */
+  protected toggleNoDpi(checked: boolean): void {
+    this.noDpi = checked;
+    this.patientSearchError = '';
+
+    if (checked) {
+      this.showAdditionalPatientData = true;
+      this.patientId = null;
+    } else {
+      this.showAdditionalPatientData = false;
+    }
+  }
 
   open(): void {
     this.dialog?.nativeElement.showModal();
@@ -74,7 +92,7 @@ export class AppointmentDialog {
     const time = String(formData.get('time') ?? '');
     const nombres = String(formData.get('nombres') ?? '').trim();
     const apellidos = String(formData.get('apellidos') ?? '').trim();
-    const dpi = this.normalizeDpi(String(formData.get('dpi') ?? ''));
+    const dpi = this.noDpi ? String(Date.now()) : this.resolveDpi(String(formData.get('dpi') ?? ''));
     const email = String(formData.get('email') ?? '').trim();
     const telefono = String(formData.get('telefono') ?? '').trim();
     const fechaNacimiento = String(formData.get('fechaNacimiento') ?? '').trim();
@@ -118,6 +136,7 @@ export class AppointmentDialog {
         this.isSaving = false;
         form.reset();
         this.showAdditionalPatientData = false;
+        this.noDpi = false;
         this.close();
       },
       error: () => {
@@ -183,6 +202,16 @@ export class AppointmentDialog {
 
   private normalizeDpi(value: string): string {
     return value.replace(/\D/g, '').trim();
+  }
+
+  /**
+   * Returns the normalized DPI, or a numeric timestamp-based fallback when the
+   * patient has no DPI. `Date.now()` yields the milliseconds since 1970 as a
+   * number-only string, which is unique enough to use as a placeholder id.
+   */
+  private resolveDpi(value: string): string {
+    const dpi = this.normalizeDpi(value);
+    return dpi || String(Date.now());
   }
 
   private extractPatientId(value: unknown): number | null {

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Appointment, AppointmentDialog } from '../../components/appointment-dialog/appointment-dialog';
 import { AppointmentService } from '../../servicios/appointment.service';
 import { AuthService } from '../../servicios/auth.service';
+import { openPdfForPrinting } from '../../servicios/pdf-print';
 
 type CalendarDay = {
   date: number;
@@ -165,7 +166,7 @@ export class Calendar {
     y = this.addPrescriptionPdfSection(pdf, 'Tratamiento', appointment.tratamiento ?? 'No registrado', margin, y + 8, contentWidth);
     this.addPrescriptionPdfSection(pdf, 'Comentarios del médico', appointment.comentariosMedico ?? 'No registrados', margin, y + 8, contentWidth);
 
-    pdf.save(`receta-${appointment.id ?? 'cita'}.pdf`);
+    openPdfForPrinting(pdf);
   }
 
   protected savePatientDiagnosis(): void {
