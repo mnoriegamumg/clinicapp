@@ -1,0 +1,62 @@
+<main class="usuarios-page">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Administración</p>
+            <h1>Usuarios</h1>
+            <p class="page-intro">Administra las cuentas de acceso al sistema y sus roles.</p>
+        </div>
+        <button type="button" class="new-button" (click)="createUsuario()">
+            <span aria-hidden="true">＋</span> Nuevo usuario
+        </button>
+    </header>
+
+    <section class="usuarios-card" aria-label="Listado de usuarios">
+        <div class="section-heading">
+            <div>
+                <p class="section-label">Directorio</p>
+                <h2>Usuarios registrados</h2>
+            </div>
+            <span class="section-meta">{{ usuarios().length }} registros</span>
+        </div>
+
+        @if (loadError()) {
+            <p class="usuarios-error" role="alert">{{ loadError() }}</p>
+        }
+
+        <div class="usuarios-list">
+            @for (usuario of usuarios(); track usuario.id ?? usuario.usuarioId ?? usernameOf(usuario)) {
+                <article class="usuario-row">
+                    <div class="usuario-avatar" aria-hidden="true">{{ initial(usuario) }}</div>
+                    <div class="usuario-info">
+                        <h3>{{ displayName(usuario) }}</h3>
+                        <p>{{ usernameOf(usuario) }}@if (usuario.email) { · {{ usuario.email }} }</p>
+                    </div>
+                    <div class="usuario-role">
+                        <span>Rol</span>
+                        <strong>{{ roleOf(usuario) }}</strong>
+                    </div>
+                    <div class="usuario-actions">
+                        <button type="button" class="edit-button" (click)="editUsuario(usuario)">
+                            Editar
+                        </button>
+                        <button type="button" class="delete-button" (click)="deleteUsuario(usuario)">
+                            Eliminar
+                        </button>
+                    </div>
+                </article>
+            } @empty {
+                @if (isLoading()) {
+                    <p class="usuarios-empty">Cargando usuarios...</p>
+                } @else {
+                    <p class="usuarios-empty">No hay usuarios registrados.</p>
+                }
+            }
+        </div>
+    </section>
+
+    <app-usuario-edit-dialog
+        [usuario]="editingUsuario()"
+        (saved)="onUsuarioSaved($event)"
+        (closed)="editingUsuario.set(null)">
+    </app-usuario-edit-dialog>
+</main>

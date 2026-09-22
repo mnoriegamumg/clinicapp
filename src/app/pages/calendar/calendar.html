@@ -79,8 +79,10 @@
                     </div>
                     @if (isMedico()) {
                     <div class="appointment-actions">
+                        @if(appointment.estado !== 'ATENDIDA') {
                         <button type="button" class="secondary-button" (click)="openAttendDialog(appointment)">Atender
                             cita</button>
+                        }
                         @if(appointment.estado === 'ATENDIDA') {
                         <button type="button" class="secondary-button"
                             (click)="openPrescriptionDialog(appointment)">Imprimir receta</button>

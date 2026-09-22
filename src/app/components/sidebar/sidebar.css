@@ -1,13 +1,16 @@
 .app-sidebar {
     display: flex;
     width: 252px;
-    min-height: 100vh;
+    height: 100vh;
+    position: sticky;
+    top: 0;
     flex: 0 0 252px;
     flex-direction: column;
     padding: 30px 18px 22px;
     border-right: 1px solid rgba(255, 255, 255, 0.72);
     background: rgba(255, 255, 255, 0.78);
     box-shadow: 10px 0 30px rgba(0, 60, 130, 0.06);
+    overflow-y: auto;
 }
 
 .brand {
@@ -124,9 +127,32 @@
 
 .sidebar-footer {
     display: flex;
+    flex-direction: column;
+    gap: 8px;
     margin-top: auto;
     padding-top: 16px;
     border-top: 1px solid #dceafa;
+}
+
+.account-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    color: #0d4a8a;
+    border: 1px solid #d7e8ff;
+    border-radius: 14px;
+    background: #f5faff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.account-button:hover {
+    background: #e9f3ff;
 }
 
 .logout-button {
@@ -150,31 +176,45 @@
     background: #e3f1ff;
 }
 
-.sidebar-branding {
+.sidebar-user {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 16px 12px 0;
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 14px;
+    background: #eef6ff;
 }
 
-.clinic-badge {
+.user-badge {
     display: grid;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     place-items: center;
+    flex: 0 0 auto;
     color: #fff;
     border-radius: 11px;
     background: linear-gradient(145deg, #1a6bc4, #6aa9f0);
-    font-size: 11px;
+    font-size: 15px;
     font-weight: 800;
+    text-transform: uppercase;
 }
 
-.sidebar-branding strong {
+.user-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info strong {
+    overflow: hidden;
     color: #0a2a4a;
-    font-size: 12px;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.sidebar-branding span {
+.user-info span {
     margin-top: 3px;
     color: #6b8aa5;
     font-size: 11px;
@@ -183,7 +223,10 @@
 @media (max-width: 760px) {
     .app-sidebar {
         width: 100%;
+        height: auto;
         min-height: auto;
+        position: static;
+        overflow-y: visible;
         padding: 16px 12px 12px;
         border-right: 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.72);

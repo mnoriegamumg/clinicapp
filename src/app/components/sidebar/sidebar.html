@@ -4,12 +4,13 @@
         <span>
             <strong>Clini<span>ca</span>App</strong>
             <small>Centro Médico</small>
+            <small>Prosamed</small>
         </span>
     </a>
 
     <nav class="main-nav" aria-label="Navegación principal">
         <p class="nav-label">Menú principal</p>
-        @for (menu of menus; track menu.route) {
+        @for (menu of visibleMenus(); track menu.route) {
             @if (menu.disabled) {
                 <a class="nav-item-muted" aria-disabled="true">
                     <span class="nav-icon" aria-hidden="true">{{ menu.icon }}</span>
@@ -27,17 +28,27 @@
     </nav>
 
     <div class="sidebar-footer">
+        <button type="button" class="account-button" (click)="openChangePassword()" aria-label="Cambiar contraseña">
+            <span class="nav-icon" aria-hidden="true">🔑</span>
+            <span>Cambiar contraseña</span>
+        </button>
         <button type="button" class="logout-button" (click)="logout()" aria-label="Cerrar sesión">
             <span class="nav-icon" aria-hidden="true">⇠</span>
             <span>Cerrar sesión</span>
         </button>
     </div>
 
-    <div class="sidebar-branding">
-        <div class="clinic-badge" aria-hidden="true">PM</div>
-        <div>
-            <strong>ProsaMed</strong>
-            <span>Agenda clínica</span>
+    <app-change-password-dialog
+        [open]="isChangePasswordOpen()"
+        (closed)="closeChangePassword()"
+        (saved)="closeChangePassword()">
+    </app-change-password-dialog>
+
+    <div class="sidebar-user" aria-label="Usuario autenticado">
+        <div class="user-badge" aria-hidden="true">{{ userInitial() }}</div>
+        <div class="user-info">
+            <strong title="{{ userName() }}">{{ userName() }}</strong>
+            <span>{{ userRole() }}</span>
         </div>
     </div>
 </aside>

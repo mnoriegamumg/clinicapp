@@ -1,0 +1,263 @@
+:host {
+    --ink: #123047;
+    --muted: #648094;
+    --blue: #1a6bc4;
+    --blue-dark: #0d4a8a;
+    --sky: #eaf4ff;
+    --line: #dceafa;
+    display: block;
+    min-height: 100vh;
+    color: var(--ink);
+    background: linear-gradient(145deg, #d9e9fc 0%, #f0f7ff 100%);
+    font-family: 'Inter', sans-serif;
+}
+
+.usuarios-page {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 48px 0 64px;
+}
+
+.page-header,
+.section-heading,
+.usuario-row {
+    display: flex;
+    align-items: center;
+}
+
+.page-header,
+.section-heading {
+    justify-content: space-between;
+    gap: 28px;
+}
+
+.page-header {
+    align-items: flex-end;
+    margin-bottom: 28px;
+}
+
+.eyebrow,
+.section-label {
+    margin: 0 0 8px;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+h1 {
+    margin-bottom: 10px;
+    color: #0b2d47;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 500;
+    line-height: 1;
+}
+
+.page-intro {
+    margin-bottom: 0;
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.new-button {
+    flex: 0 0 auto;
+    padding: 13px 20px;
+    border: 0;
+    border-radius: 22px;
+    color: #fff;
+    background: var(--blue);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.new-button:hover {
+    background: var(--blue-dark);
+}
+
+.usuarios-card {
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 20px 60px rgba(0, 60, 130, 0.12);
+}
+
+.section-heading {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+}
+
+.section-heading h2 {
+    margin-bottom: 0;
+    font-size: 24px;
+}
+
+.section-meta {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.usuarios-error {
+    margin: 18px 0 0;
+    color: #b42318;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.usuarios-empty {
+    padding: 24px 0;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.usuarios-list {
+    display: grid;
+}
+
+.usuario-row {
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.usuario-row:last-child {
+    border-bottom: 0;
+}
+
+.usuario-avatar {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    flex: 0 0 auto;
+    color: #fff;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #1a6bc4, #67b1ee);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.usuario-info {
+    min-width: 220px;
+    flex: 1;
+}
+
+.usuario-info h3 {
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.usuario-info p {
+    margin-bottom: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.usuario-role {
+    display: flex;
+    min-width: 120px;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.usuario-role span {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.usuario-role strong {
+    font-size: 13px;
+}
+
+.usuario-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-button,
+.delete-button {
+    padding: 11px 14px;
+    border: 1px solid #b9d8f7;
+    border-radius: 20px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.edit-button {
+    color: var(--blue-dark);
+    background: #fff;
+}
+
+.edit-button:hover {
+    color: #fff;
+    background: var(--blue);
+}
+
+.delete-button {
+    border-color: #f3c4bd;
+    color: #b42318;
+    background: #fff5f4;
+}
+
+.delete-button:hover {
+    color: #fff;
+    background: #b42318;
+    border-color: #b42318;
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(26, 107, 196, 0.3);
+    outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+    .usuarios-page {
+        width: min(100% - 28px, 560px);
+        padding-top: 30px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .usuarios-card {
+        padding: 22px;
+        border-radius: 20px;
+    }
+
+    .usuario-row {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .usuario-info {
+        min-width: calc(100% - 66px);
+    }
+
+    .usuario-role {
+        margin-left: 62px;
+    }
+
+    .usuario-actions {
+        margin-left: auto;
+    }
+}

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { authGuard } from './servicios/auth.guard';
+import { adminGuard } from './servicios/admin.guard';
 import { authRedirectGuard } from './servicios/auth-redirect.guard';
 
 export const routes: Routes = [
@@ -34,6 +35,11 @@ export const routes: Routes = [
     path: 'reporte-citas',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/reporte-citas/reporte-citas').then((module) => module.ReporteCitas),
+  },
+  {
+    path: 'usuarios',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./pages/usuarios/usuarios').then((module) => module.Usuarios),
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' },

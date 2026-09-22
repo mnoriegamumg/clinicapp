@@ -178,10 +178,15 @@ export class Calendar {
     this.isSavingDiagnosis = true;
     this.diagnosisSaveError = '';
 
+    // Registra al médico que agrega el diagnóstico: el usuario autenticado.
+    // Si no se puede resolver desde la sesión, se usa el 1 por defecto.
+    const medicoId = this.authService.getMedicoId() ?? 1;
+
     this.appointmentService.updateAppointmentDiagnosis(appointment.id, {
       diagnostico: this.doctorDiagnosis().trim(),
       comentariosMedico: this.doctorComments().trim(),
       tratamiento: this.doctorTreatment().trim(),
+      medicoId,
     }).subscribe({
       next: () => {
         this.isSavingDiagnosis = false;

@@ -1,0 +1,66 @@
+<dialog #dialog class="usuario-edit-dialog" (click)="closeOnBackdrop($event)">
+  @if (usuario()) {
+    <div class="dialog-panel" role="document">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h2>{{ isEditing() ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+          <p class="dialog-intro">
+            {{ isEditing() ? 'Actualiza los datos del usuario.' : 'Crea una cuenta de acceso al sistema.' }}
+          </p>
+        </div>
+        <button type="button" class="close-button" aria-label="Cerrar diálogo" (click)="close()">×</button>
+      </div>
+
+      <form #editForm (submit)="$event.preventDefault(); submit(editForm)">
+        <div class="form-row">
+          <label>
+            Usuario
+            <input name="username" type="text" [value]="username()" placeholder="Nombre de usuario" autocomplete="off" required>
+          </label>
+          <label>
+            Nombre
+            <input name="nombre" type="text" [value]="nombre()" placeholder="Nombre completo">
+          </label>
+        </div>
+
+        <label>
+          Email
+          <input name="email" type="email" [value]="email()" placeholder="correo@ejemplo.com">
+        </label>
+
+        <div class="form-row">
+          <label>
+            Rol
+            <select name="rol" required>
+              <option value="" [selected]="!rol()" disabled>Selecciona un rol</option>
+              <option value="ADMIN" [selected]="rol() === 'ADMIN'">Administrador</option>
+              <option value="MEDICO" [selected]="rol() === 'MEDICO'">Médico</option>
+              <option value="PACIENTE" [selected]="rol() === 'PACIENTE'">Paciente</option>
+            </select>
+          </label>
+          <label>
+            {{ isEditing() ? 'Nueva contraseña' : 'Contraseña' }}
+            <input
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              [placeholder]="isEditing() ? 'Dejar en blanco para no cambiar' : 'Contraseña'"
+              [required]="!isEditing()">
+          </label>
+        </div>
+
+        @if (saveError()) {
+          <p class="form-error" role="alert">{{ saveError() }}</p>
+        }
+
+        <div class="dialog-actions">
+          <button type="button" class="secondary-button" (click)="close()">Cancelar</button>
+          <button type="submit" class="primary-button" [disabled]="isSaving()">
+            {{ isSaving() ? 'Guardando...' : (isEditing() ? 'Guardar cambios' : 'Crear usuario') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</dialog>

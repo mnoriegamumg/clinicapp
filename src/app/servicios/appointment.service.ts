@@ -15,6 +15,7 @@ export interface UpdateAppointmentDiagnosisRequest {
   diagnostico: string;
   comentariosMedico: string;
   tratamiento: string;
+  medicoId?: number;
 }
 
 export interface AppointmentResponse {

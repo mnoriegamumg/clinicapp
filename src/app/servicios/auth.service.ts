@@ -8,6 +8,11 @@ export interface AuthUser {
   role?: string;
 }
 
+export interface ChangePasswordRequest {
+  passwordActual: string;
+  passwordNueva: string;
+}
+
 interface LoginResponse {
   usuario?: string;
   email?: string;
@@ -23,7 +28,8 @@ interface LoginResponse {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly loginUrl = 'http://localhost:8080/api/auth/login';
+  private readonly authUrl = 'http://localhost:8080/api/auth';
+  private readonly loginUrl = `${this.authUrl}/login`;
   private readonly tokenKey = 'clinicapp.auth.token';
   private readonly authenticatedUser = signal<AuthUser | null>(this.readStoredUser());
 
@@ -57,6 +63,10 @@ export class AuthService {
     }
   }
 
+  changePassword(request: ChangePasswordRequest): Observable<unknown> {
+    return this.http.post<unknown>(`${this.authUrl}/cambiar-password`, request);
+  }
+
   getToken(): string | null {
     if (!isPlatformBrowser(this.platformId)) {
       return null;
@@ -71,7 +81,26 @@ export class AuthService {
       return null;
     }
 
-    return { email: '', role: this.resolveRoleFromToken(token) };
+    return {
+      email: this.resolveEmailFromToken(token) ?? '',
+      role: this.resolveRoleFromToken(token),
+    };
+  }
+
+  private resolveEmailFromToken(token: string): string | undefined {
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) {
+        return undefined;
+      }
+
+      const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+      const value = decoded.email ?? decoded.username ?? decoded.usuario ?? decoded.sub;
+
+      return typeof value === 'string' ? value : undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   isAuthenticated(): boolean {
@@ -81,6 +110,48 @@ export class AuthService {
   isMedico(): boolean {
     const role = this.currentUser()?.role ?? this.resolveRoleFromToken(this.getToken() ?? '');
     return role?.toLowerCase() === 'medico' || role?.toLowerCase() === 'doctor' || role?.toLowerCase() === 'médico';
+  }
+
+  isAdmin(): boolean {
+    const role = this.currentUser()?.role ?? this.resolveRoleFromToken(this.getToken() ?? '');
+    return role?.toUpperCase().includes('ADMIN') ?? false;
+  }
+
+  /**
+   * Returns the id of the currently authenticated medico, decoded from the JWT.
+   * Returns `null` when there is no token or the id claim is missing.
+   */
+  getMedicoId(): number | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+
+    return this.resolveMedicoIdFromToken(token);
+  }
+
+  private resolveMedicoIdFromToken(token: string): number | null {
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) {
+        return null;
+      }
+
+      const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+      const rawId =
+        decoded.medicoId ??
+        decoded.medico_id ??
+        decoded.doctorId ??
+        decoded.usuarioId ??
+        decoded.userId ??
+        decoded.id ??
+        decoded.sub;
+
+      const id = Number(rawId);
+      return Number.isFinite(id) ? id : null;
+    } catch {
+      return null;
+    }
   }
 
   private resolveRole(response: LoginResponse): string | undefined {
@@ -120,6 +191,10 @@ export class AuthService {
 
     if (normalized.includes('paciente')) {
       return 'PACIENTE';
+    }
+
+    if (normalized.includes('admin')) {
+      return 'ADMIN';
     }
 
     return role;
