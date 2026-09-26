@@ -159,6 +159,17 @@
   padding: 1.5rem;
 }
 
+.load-error {
+  margin: 0.5rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #f3b8b8;
+  border-radius: 10px;
+  color: #a61b1b;
+  background: #fff1f1;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
 @media (max-width: 760px) {
   .report-page {
     padding: 1rem;

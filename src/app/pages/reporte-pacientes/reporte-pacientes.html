@@ -59,7 +59,7 @@
             </tr>
           } @else if (loadError()) {
             <tr>
-              <td colspan="8" class="empty-state">{{ loadError() }}</td>
+              <td colspan="8"><p class="load-error" role="alert">{{ loadError() }}</p></td>
             </tr>
           } @else if (!hasDateRange()) {
             <tr>

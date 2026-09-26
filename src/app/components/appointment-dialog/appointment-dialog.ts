@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, signal, ViewChild } from '@angular/core';
 import { Observable, of, switchMap, tap } from 'rxjs';
 import { AppointmentService } from '../../servicios/appointment.service';
 import { PatientResponse, PatientService } from '../../servicios/patient.service';
@@ -43,7 +43,7 @@ export class AppointmentDialog {
 
   readonly selectedDate = input('');
   protected isSaving = false;
-  protected saveError = '';
+  protected readonly saveError = signal('');
   protected patientLoading = false;
   protected patientSearchError = '';
   protected showAdditionalPatientData = false;
@@ -99,7 +99,7 @@ export class AppointmentDialog {
     const direccion = String(formData.get('direccion') ?? '').trim();
 
     this.isSaving = true;
-    this.saveError = '';
+    this.saveError.set('');
 
     const createPatientRequest$ = this.showAdditionalPatientData
       ? this.patientService.createPatient({
@@ -139,11 +139,52 @@ export class AppointmentDialog {
         this.noDpi = false;
         this.close();
       },
-      error: () => {
+      error: (error: unknown) => {
         this.isSaving = false;
-        this.saveError = 'No se pudo guardar la cita. Verifica los datos e inténtalo de nuevo.';
+        this.saveError.set(this.getSaveErrorMessage(error));
       },
     });
+  }
+
+  private getSaveErrorMessage(error: unknown): string {
+    const fallback = 'No se pudo guardar la cita. Verifica los datos e inténtalo de nuevo.';
+
+    if (typeof error !== 'object' || error === null || !('error' in error)) {
+      return fallback;
+    }
+
+    const response = error.error;
+
+    if (typeof response !== 'object' || response === null) {
+      return fallback;
+    }
+
+    const payload = response as Record<string, unknown>;
+    const validationErrors = payload['errors'];
+
+    if (typeof validationErrors === 'object' && validationErrors !== null && !Array.isArray(validationErrors)) {
+      const messages = Object.entries(validationErrors as Record<string, unknown>).flatMap(([field, value]) => {
+        const label = field === 'fechaHora' ? 'Fecha y hora' : field;
+        const details = typeof value === 'string'
+          ? [value]
+          : Array.isArray(value)
+            ? value.filter((item): item is string => typeof item === 'string')
+            : [];
+
+        return details.map((detail) => `${label}: ${detail}`);
+      });
+
+      if (messages.length > 0) {
+        const summary = typeof payload['error'] === 'string' ? payload['error'] : 'Error de validación';
+        return `${summary}: ${messages.join(' ')}`;
+      }
+    }
+
+    if (typeof payload['message'] === 'string') {
+      return payload['message'];
+    }
+
+    return typeof payload['error'] === 'string' ? payload['error'] : fallback;
   }
 
   protected schedulePatientSearch(form: HTMLFormElement): void {

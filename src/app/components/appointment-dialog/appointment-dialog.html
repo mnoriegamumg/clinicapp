@@ -106,8 +106,8 @@
                 <textarea name="reason" rows="3" placeholder="Describe brevemente el motivo" required></textarea>
             </label>
 
-            @if (saveError) {
-                <p class="form-error" role="alert">{{ saveError }}</p>
+            @if (saveError()) {
+                <p class="form-error" role="alert">{{ saveError() }}</p>
             }
 
             <div class="dialog-actions">
