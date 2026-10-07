@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface UsuarioResponse {
   id?: number | string;
@@ -30,7 +31,7 @@ export interface UpdateUsuarioRequest extends Partial<Omit<CreateUsuarioRequest,
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/usuarios';
+  private readonly baseUrl = environment.apiBaseUrl + '/api/usuarios';
 
   getUsuarios(): Observable<UsuarioResponse[]> {
     return this.http.get<UsuarioResponse[]>(this.baseUrl);

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface PatientResponse {
   id?: number | string;
@@ -35,7 +36,7 @@ export interface UpdatePatientRequest extends Partial<CreatePatientRequest> {}
 @Injectable({ providedIn: 'root' })
 export class PatientService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/pacientes';
+  private readonly baseUrl = environment.apiBaseUrl + '/api/pacientes';
 
   getPatients(): Observable<PatientResponse[]> {
     return this.http.get<PatientResponse[]>(this.baseUrl);

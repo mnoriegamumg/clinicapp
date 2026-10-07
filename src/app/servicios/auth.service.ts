@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface AuthUser {
   email: string;
@@ -28,7 +29,7 @@ interface LoginResponse {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly authUrl = 'http://localhost:8080/api/auth';
+  private readonly authUrl = environment.apiBaseUrl + '/api/auth';
   private readonly loginUrl = `${this.authUrl}/login`;
   private readonly tokenKey = 'clinicapp.auth.token';
   private readonly authenticatedUser = signal<AuthUser | null>(this.readStoredUser());
